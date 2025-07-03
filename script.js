@@ -1,4 +1,4 @@
-// Email form handling
+// Email form handling for Licensify landing page
 document.addEventListener('DOMContentLoaded', function() {
     const emailForm = document.getElementById('emailForm');
     const modal = document.getElementById('successModal');
@@ -9,21 +9,6 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             handleEmailSubmission(this);
         });
-    }
-    
-    // iPhone mockup animation
-    const question1 = document.getElementById('question1');
-    const question2 = document.getElementById('question2');
-    
-    if (question1 && question2) {
-        // Start the animation cycle
-        function startQuestionCycle() {
-            // Both animations are handled by CSS keyframes
-            // This ensures they start at the same time
-        }
-        
-        // Start the cycle immediately
-        startQuestionCycle();
     }
     
     // Handle email submission
@@ -45,8 +30,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Simulate API call (replace with actual API endpoint)
         setTimeout(() => {
-            // Store email in localStorage for now (replace with actual backend)
-            storeEmail(email);
+            // Store email and track signup
+            storeEmailWithTracking(email);
             
             // Reset form
             emailInput.value = '';
@@ -72,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
             existingError.remove();
         }
         
-        // Add error class
+        // Add error styling
         input.style.borderColor = '#ff6b6b';
         input.style.background = '#fff5f5';
         
@@ -113,13 +98,39 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Total emails:', emails.length);
     }
     
+    // Analytics tracking (replace with your preferred analytics)
+    function trackEmailSignup(email) {
+        // Google Analytics 4 example
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'email_signup', {
+                'email': email,
+                'source': 'landing_page'
+            });
+        }
+        
+        // Facebook Pixel example
+        if (typeof fbq !== 'undefined') {
+            fbq('track', 'Lead', {
+                'email': email
+            });
+        }
+        
+        console.log('Email signup tracked:', email);
+    }
+    
+    // Store email with tracking
+    function storeEmailWithTracking(email) {
+        storeEmail(email);
+        trackEmailSignup(email);
+    }
+    
     // Show success modal
     function showSuccessModal() {
         modal.classList.add('show');
         document.body.style.overflow = 'hidden';
     }
     
-    // Close modal
+    // Close modal function (global scope for onclick handler)
     window.closeModal = function() {
         modal.classList.remove('show');
         document.body.style.overflow = 'auto';
@@ -192,31 +203,4 @@ document.addEventListener('DOMContentLoaded', function() {
         card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
         observer.observe(card);
     });
-});
-
-// Analytics tracking (replace with your preferred analytics)
-function trackEmailSignup(email) {
-    // Google Analytics 4 example
-    if (typeof gtag !== 'undefined') {
-        gtag('event', 'email_signup', {
-            'email': email,
-            'source': 'landing_page'
-        });
-    }
-    
-    // Facebook Pixel example
-    if (typeof fbq !== 'undefined') {
-        fbq('track', 'Lead', {
-            'email': email
-        });
-    }
-    
-    // Custom analytics
-    console.log('Email signup tracked:', email);
-}
-
-// Add to email storage function
-function storeEmailWithTracking(email) {
-    storeEmail(email);
-    trackEmailSignup(email);
-} 
+}); 
