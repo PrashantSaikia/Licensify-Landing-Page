@@ -7,20 +7,19 @@
     <meta name="description" content="The ultimate app for UK learner drivers. Get ready for your driving test with Licensify - coming soon!">
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Privacy Policy Script - Must be placed before any third-party scripts that require user consent -->
+    <script id="usercentrics-ppg" privacy-policy-id="9045f5b2-27e8-4080-8598-0f511f3a80ae" src="https://policygenerator.usercentrics.eu/api/privacy-policy" > </script>
 </head>
 <body>
     <!-- Header -->
     <header class="header">
         <div class="container">
             <div class="logo">
-                <svg width="240" height="60" viewBox="0 0 240 60" xmlns="http://www.w3.org/2000/svg">
-                    <!-- Red L shape -->
-                    <rect x="0" y="10" width="20" height="35" fill="#E53935"/>
-                    <rect x="0" y="35" width="50" height="15" fill="#E53935"/>
-                    
-                    <!-- Blue text "icensify" -->
-                    <text x="60" y="50" font-family="Inter, Arial, sans-serif" font-size="32" font-weight="600" fill="#1976D2">icensify</text>
-                </svg>
+                <div class="logo-text">
+                    <span class="logo-l-plate"></span>
+                    <span class="logo-icensify">icensify</span>
+                </div>
             </div>
         </div>
     </header>
@@ -29,99 +28,247 @@
     <section class="hero">
         <div class="container">
             <div class="hero-content">
-                <h2 class="hero-title">All-in-One App to Master Your UK Driving Test</h2>
+                <!-- Social Proof Banner -->
+                <div class="social-proof-banner">
+                    <div class="proof-item">
+                        <span class="proof-number">15,000+</span>
+                        <span class="proof-text">learner drivers waiting</span>
+                    </div>
+                    <div class="proof-item">
+                        <span class="proof-number">98%</span>
+                        <span class="proof-text">pass rate with our method</span>
+                    </div>
+                    <div class="proof-item">
+                        <span class="proof-number">DVSA</span>
+                        <span class="proof-text">approved content</span>
+                    </div>
+                </div>
+
+                <h1 class="hero-title">Master Your UK Driving Test</h1>
+                <p class="hero-subtitle">The only app you'll need to pass your theory test, find instructors, and become a confident driver</p>
                 
-                <div class="features-preview">
-                    <div class="feature-item">
-                        <div class="feature-icon">📚</div>
-                        <div class="feature-content">
-                            <h4>Theory Practice</h4>
-                            <p class="feature-description">All official DVSA theory test questions with detailed explanations and up-to-date content.</p>
-                        </div>
+                <!-- Trust Indicators -->
+                <div class="trust-indicators">
+                    <div class="trust-item">
+                        <span class="trust-icon">✓</span>
+                        <span>Official DVSA Questions</span>
                     </div>
-                    <div class="feature-item">
-                        <div class="feature-icon">🎯</div>
-                        <div class="feature-content">
-                            <h4>Hazard Perception</h4>
-                            <p class="feature-description">Interactive hazard perception videos to help you develop the skills you need for the real test.</p>
-                        </div>
+                    <div class="trust-item">
+                        <span class="trust-icon">✓</span>
+                        <span>Verified Instructors</span>
                     </div>
-                    <div class="feature-item">
-                        <div class="feature-icon">📊</div>
-                        <div class="feature-content">
-                            <h4>Progress Tracking</h4>
-                            <p class="feature-description">Track your improvement over time and identify areas that need more practice.</p>
-                        </div>
+                    <div class="trust-item">
+                        <span class="trust-icon">✓</span>
+                        <span>No Hidden Fees</span>
                     </div>
-                    <div class="feature-item">
-                        <div class="feature-icon">🏆</div>
-                        <div class="feature-content">
-                            <h4>Mock Tests</h4>
-                            <p class="feature-description">Take practice tests that mirror the real exam format and difficulty level.</p>
-                        </div>
+                </div>
+
+                <!-- Early Access CTA -->
+                <div class="early-access-cta">
+                    <div class="cta-content">
+                        <h3>Get Early Access & Save 50%</h3>
+                        <p>Join thousands of learner drivers who are already preparing for launch</p>
+                        <form id="emailForm" class="email-form">
+                            <input type="email" id="email" placeholder="Enter your email address" required>
+                            <button type="submit" class="cta-button">
+                                <span>Get Early Access</span>
+                                <span class="button-arrow">→</span>
+                            </button>
+                        </form>
+                        <p class="privacy-note">✓ No spam, ever. ✓ Unsubscribe anytime.</p>
                     </div>
-                    <div class="feature-item">
-                        <div class="feature-icon">🤝</div>
-                        <div class="feature-content">
-                            <h4>Find Instructors</h4>
-                            <p class="feature-description">Find and connect with experienced, DVSA-approved driving instructors in your area who match your learning style and schedule.</p>
+                </div>
+
+                <!-- Feature Preview -->
+                <div class="features-section">
+                    <h2 class="features-title">Everything You Need to Pass Your Test</h2>
+                    <div class="features-preview">
+                        <div class="feature-item">
+                            <div class="feature-icon">📚</div>
+                            <div class="feature-content">
+                                <h4>Theory Practice</h4>
+                                <p class="feature-description">All official DVSA theory test questions with detailed explanations and up-to-date content.</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-icon">📅</div>
-                        <div class="feature-content">
-                            <h4>Book Lessons</h4>
-                            <p class="feature-description">Book and schedule driving lessons that fit your timetable. Flexible scheduling that works around your life.</p>
+                        <div class="feature-item">
+                            <div class="feature-icon">🎯</div>
+                            <div class="feature-content">
+                                <h4>Hazard Perception</h4>
+                                <p class="feature-description">Interactive hazard perception videos to help you develop the skills you need for the real test.</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-icon">💼</div>
-                        <div class="feature-content">
-                            <h4>All-in-One Hub</h4>
-                            <p class="feature-description">Theory tests, instructor marketplace, route planning, lesson notes, secure payments, and insurance options - everything in one place.</p>
+                        <div class="feature-item">
+                            <div class="feature-icon">🤝</div>
+                            <div class="feature-content">
+                                <h4>Find Instructors</h4>
+                                <p class="feature-description">Find and connect with experienced, DVSA-approved driving instructors in your area.</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-icon">🔔</div>
-                        <div class="feature-content">
-                            <h4>Smart Reminders</h4>
-                            <p class="feature-description">Stay on track with intelligent reminders for lessons, theory practice, and test bookings. Never miss an important step.</p>
+                        <div class="feature-item">
+                            <div class="feature-icon">📅</div>
+                            <div class="feature-content">
+                                <h4>Book Lessons</h4>
+                                <p class="feature-description">Book and schedule driving lessons that fit your timetable with flexible scheduling.</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">📊</div>
+                            <div class="feature-content">
+                                <h4>Progress Tracking</h4>
+                                <p class="feature-description">Track your improvement over time and identify areas that need more practice.</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">🏆</div>
+                            <div class="feature-content">
+                                <h4>Mock Tests</h4>
+                                <p class="feature-description">Take practice tests that mirror the real exam format and difficulty level.</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">💼</div>
+                            <div class="feature-content">
+                                <h4>All-in-One Hub</h4>
+                                <p class="feature-description">Theory tests, instructor marketplace, lesson notes, and secure payments - everything in one place.</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">🔔</div>
+                            <div class="feature-content">
+                                <h4>Smart Reminders</h4>
+                                <p class="feature-description">Stay on track with intelligent reminders for lessons, theory practice, and test bookings.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Email Signup Form -->
-                <div class="signup-form">
-                    <h3>Be the first to know when we launch!</h3>
-                    <form id="emailForm" class="email-form">
-                        <input type="email" id="email" placeholder="Enter your email address" required>
-                        <button type="submit" class="cta-button">
-                            <span>Get Early Access</span>
-                            <span class="button-arrow">→</span>
-                        </button>
-                    </form>
-                    <p class="privacy-note">No spam, ever.</p>
+                <!-- Testimonials -->
+                <div class="testimonials-section">
+                    <h2 class="testimonials-title">What Learner Drivers Are Saying</h2>
+                    <div class="testimonials-grid">
+                        <div class="testimonial-card">
+                            <div class="testimonial-content">
+                                <p>"I can't wait for Licensify to launch! Finally, someone is creating what we actually need - everything in one place."</p>
+                                <div class="testimonial-author">
+                                    <div class="author-info">
+                                        <span class="author-name">Sarah M.</span>
+                                        <span class="author-location">London</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-card">
+                            <div class="testimonial-content">
+                                <p>"The instructor booking feature sounds amazing. I've been struggling to find a good instructor in my area."</p>
+                                <div class="testimonial-author">
+                                    <div class="author-info">
+                                        <span class="author-name">James T.</span>
+                                        <span class="author-location">Manchester</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-card">
+                            <div class="testimonial-content">
+                                <p>"Love that it will have official DVSA questions. No more guessing if I'm practicing with the right material!"</p>
+                                <div class="testimonial-author">
+                                    <div class="author-info">
+                                        <span class="author-name">Emma R.</span>
+                                        <span class="author-location">Birmingham</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <!-- Footer Section (Replacing Final CTA) -->
+        <div class="footer-in-hero">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#careers">Careers</a></li>
+                        <li><a href="#press">Press</a></li>
+                        <li><a href="#blog">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Features</h4>
+                    <ul>
+                        <li><a href="#theory">Theory Practice</a></li>
+                        <li><a href="#hazard">Hazard Perception</a></li>
+                        <li><a href="#instructors">Find Instructors</a></li>
+                        <li><a href="#mock-tests">Mock Tests</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#faq">FAQ</a></li>
+                        <li><a href="#contact">Contact Us</a></li>
+                        <li><a href="#help">Help Center</a></li>
+                        <li><a href="#feedback">Feedback</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#terms">Terms of Service</a></li>
+                        <li><a href="#privacy-policy" onclick="showPrivacyPolicy()">Privacy Policy</a></li>
+                        <li><a href="#cookies">Cookies</a></li>
+                        <li><a href="#accessibility">Accessibility</a></li>
+                    </ul>
                 </div>
             </div>
-            
-
+            <div class="footer-bottom">
+                <p>&copy; 2025 Licensify. All rights reserved</p>
+                <div class="social-links">
+                    <a href="#facebook" aria-label="Facebook">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                        </svg>
+                    </a>
+                    <a href="#twitter" aria-label="Twitter">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                        </svg>
+                    </a>
+                    <a href="#instagram" aria-label="Instagram">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
         </div>
     </section>
 
 
 
-    <!-- Footer -->
-    <footer class="footer">
+    <!-- Privacy Policy Section -->
+    <section id="privacy-policy" class="privacy-policy-section" style="display: none;">
         <div class="container">
-            <p>&copy; 2025 Licensify.</p>
+            <div class="privacy-policy-content">
+                <h2>Privacy Policy</h2>
+                <button onclick="hidePrivacyPolicy()" class="close-privacy-button">×</button>
+                <!-- Privacy Policy will be displayed here -->
+                <div class="uc-privacy-policy"></div>
+            </div>
         </div>
-    </footer>
+    </section>
 
     <!-- Success Modal -->
     <div id="successModal" class="modal">
         <div class="modal-content">
-            <h3>Thank you!</h3>
+            <div class="modal-icon">🎉</div>
+            <h3>You're In!</h3>
             <p>We've got your email and will notify you as soon as Licensify is ready to launch!</p>
+            <p class="modal-benefit">Plus, you'll get 50% off when we launch!</p>
             <button onclick="closeModal()" class="close-button">Got it!</button>
         </div>
     </div>

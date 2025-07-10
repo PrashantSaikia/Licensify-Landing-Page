@@ -1,0 +1,454 @@
+{
+  "name": "Licensify Instagram Automation - 3 Posts Daily",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 8
+            }
+          ]
+        }
+      },
+      "id": "f8d78c0d-2c3e-4f6a-9b1d-5e4f7a8b9c0d",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        240,
+        300
+      ],
+      "notes": "Triggers 3 times daily (every 8 hours) at 8AM, 4PM, and 12AM"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "post_content",
+              "name": "post_content",
+              "value": "={{ \n  [\n    {\n      \"caption\": \"🚗 Ready to ace your theory test? Licensify makes learning fun with interactive mock tests and real-time feedback! 📚✨ Start your journey to becoming a confident driver today. #LearnerDriver #DrivingTest #TheoryTest #DrivingLessons #RoadSafety #LicensifyApp #DrivingTips\",\n      \"image_prompt\": \"Young confident person sitting in driver's seat of modern car, holding phone with driving app interface, bright daylight, professional photography style, encouraging atmosphere\",\n      \"hashtags\": \"#LearnerDriver #DrivingTest #TheoryTest #DrivingLessons #RoadSafety #LicensifyApp #DrivingTips\"\n    },\n    {\n      \"caption\": \"⚠️ Master hazard perception with Licensify's advanced simulator! 👀 Practice spotting dangers on the road before you even get behind the wheel. Your safety starts with preparation! 🛡️ #HazardPerception #DrivingSafety #LearnerDriver #DrivingPrep #RoadAwareness #LicensifyApp #SafetyFirst\",\n      \"image_prompt\": \"Split screen showing hazard perception test scenario with road scene and interactive elements, modern clean interface, educational style\",\n      \"hashtags\": \"#HazardPerception #DrivingSafety #LearnerDriver #DrivingPrep #RoadAwareness #LicensifyApp #SafetyFirst\"\n    },\n    {\n      \"caption\": \"📍 Find the perfect driving instructor near you with Licensify! 🚗 Book lessons, track progress, and get personalized recommendations all in one place. Your driving success starts here! 🎯 #DrivingInstructor #BookLessons #LearnerDriver #DrivingLessons #LocalInstructor #LicensifyApp #DriveToSuccess\",\n      \"image_prompt\": \"Friendly driving instructor standing next to dual-control car, giving thumbs up, learner driver visible through windscreen, sunny day, encouraging professional atmosphere\",\n      \"hashtags\": \"#DrivingInstructor #BookLessons #LearnerDriver #DrivingLessons #LocalInstructor #LicensifyApp #DriveToSuccess\"\n    },\n    {\n      \"caption\": \"📊 Track your progress like a pro with Licensify's smart dashboard! 📈 See your improvement in real-time and identify areas to focus on. Knowledge is power! 💪 #ProgressTracking #DrivingStats #LearnerDriver #StudySmart #DrivingPrep #LicensifyApp #DataDriven\",\n      \"image_prompt\": \"Modern smartphone displaying colorful progress charts and driving statistics, clean interface design, motivational dashboard view, bright colors\",\n      \"hashtags\": \"#ProgressTracking #DrivingStats #LearnerDriver #StudySmart #DrivingPrep #LicensifyApp #DataDriven\"\n    },\n    {\n      \"caption\": \"🔔 Never miss a lesson or test date again! Licensify's smart reminders keep you on track to pass your driving test. Set it and forget it! ⏰ #SmartReminders #DrivingSchedule #LearnerDriver #TestPrep #OrganizedLearning #LicensifyApp #NeverMissALesson\",\n      \"image_prompt\": \"Phone notification showing driving lesson reminder, calendar app interface, organized schedule view, clean modern design\",\n      \"hashtags\": \"#SmartReminders #DrivingSchedule #LearnerDriver #TestPrep #OrganizedLearning #LicensifyApp #NeverMissALesson\"\n    },\n    {\n      \"caption\": \"🎯 One app, all your driving needs! Theory practice, hazard perception, instructor booking, and progress tracking - Licensify has it all! 🚗💼 #AllInOne #DrivingApp #LearnerDriver #ComprehensiveSolution #EverythingYouNeed #LicensifyApp #DrivingSuccess\",\n      \"image_prompt\": \"Modern smartphone with split screen showing multiple app features - theory test, hazard perception, instructor booking, progress tracking, professional app design\",\n      \"hashtags\": \"#AllInOne #DrivingApp #LearnerDriver #ComprehensiveSolution #EverythingYouNeed #LicensifyApp #DrivingSuccess\"\n    },\n    {\n      \"caption\": \"🏆 Join thousands of successful learner drivers who passed with Licensify! Your turn is next! 🚗✨ Start your journey to driving independence today. #SuccessStories #PassedWithLicensify #LearnerDriver #DrivingSuccess #JoinThousands #LicensifyApp #DrivingIndependence\",\n      \"image_prompt\": \"Group of happy young people holding driving licenses, standing next to cars, celebration atmosphere, diverse group, bright and cheerful\",\n      \"hashtags\": \"#SuccessStories #PassedWithLicensify #LearnerDriver #DrivingSuccess #JoinThousands #LicensifyApp #DrivingIndependence\"\n    },\n    {\n      \"caption\": \"💡 Pro tip: Practice makes perfect! Use Licensify's mock tests to simulate real exam conditions. The more you practice, the more confident you'll be! 📚🎯 #MockTests #PracticeMakesPerfect #LearnerDriver #ExamPrep #Confidence #LicensifyApp #ProTip\",\n      \"image_prompt\": \"Person confidently taking practice test on tablet, focused expression, study environment, motivational lighting, success-oriented atmosphere\",\n      \"hashtags\": \"#MockTests #PracticeMakesPerfect #LearnerDriver #ExamPrep #Confidence #LicensifyApp #ProTip\"\n    }\n  ][Math.floor(Math.random() * 8)]\n}}"
+            },
+            {
+              "id": "post_time",
+              "name": "post_time",
+              "value": "={{ new Date().getHours() < 12 ? 'Morning' : (new Date().getHours() < 17 ? 'Afternoon' : 'Evening') }}"
+            },
+            {
+              "id": "instagram_account_id",
+              "name": "instagram_account_id",
+              "value": "YOUR_INSTAGRAM_BUSINESS_ACCOUNT_ID"
+            }
+          ]
+        }
+      },
+      "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "name": "Prepare Content",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        440,
+        300
+      ],
+      "notes": "Selects random content from predefined Licensify driving-related posts"
+    },
+    {
+      "parameters": {
+        "url": "https://api.replicate.com/v1/predictions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Token YOUR_REPLICATE_API_TOKEN"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "version",
+              "value": "black-forest-labs/flux-1.1-pro"
+            },
+            {
+              "name": "input",
+              "value": "={{ {\"prompt\": $json.post_content.image_prompt, \"width\": 1080, \"height\": 1080, \"num_outputs\": 1, \"guidance_scale\": 3, \"num_inference_steps\": 28} }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b2c3d4e5-f6g7-8901-bcde-f234567890ab",
+      "name": "Generate AI Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        640,
+        300
+      ],
+      "notes": "Generates driving-related image using AI based on the selected content"
+    },
+    {
+      "parameters": {
+        "amount": 10,
+        "unit": "seconds"
+      },
+      "id": "c3d4e5f6-g7h8-9012-cdef-34567890abcd",
+      "name": "Wait for Image Generation",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        840,
+        300
+      ],
+      "notes": "Waits for AI image generation to complete"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Generate AI Image').item.json.urls.get }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Token YOUR_REPLICATE_API_TOKEN"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d4e5f6g7-h8i9-0123-defg-4567890abcde",
+      "name": "Get Generated Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1040,
+        300
+      ],
+      "notes": "Retrieves the generated image URL from Replicate API"
+    },
+    {
+      "parameters": {
+        "url": "=https://graph.facebook.com/v18.0/{{ $json.instagram_account_id }}/media",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "image_url",
+              "value": "={{ $('Get Generated Image').item.json.output[0] }}"
+            },
+            {
+              "name": "caption",
+              "value": "={{ $json.post_content.caption }}"
+            },
+            {
+              "name": "access_token",
+              "value": "YOUR_FACEBOOK_ACCESS_TOKEN"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e5f6g7h8-i9j0-1234-efgh-567890abcdef",
+      "name": "Create Instagram Media Container",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1240,
+        300
+      ],
+      "notes": "Creates media container for Instagram post using Facebook Graph API"
+    },
+    {
+      "parameters": {
+        "amount": 5,
+        "unit": "seconds"
+      },
+      "id": "f6g7h8i9-j0k1-2345-fghi-67890abcdefg",
+      "name": "Wait for Media Processing",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1440,
+        300
+      ],
+      "notes": "Waits for Instagram to process the media container"
+    },
+    {
+      "parameters": {
+        "url": "=https://graph.facebook.com/v18.0/{{ $json.instagram_account_id }}/media_publish",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "creation_id",
+              "value": "={{ $('Create Instagram Media Container').item.json.id }}"
+            },
+            {
+              "name": "access_token",
+              "value": "YOUR_FACEBOOK_ACCESS_TOKEN"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "g7h8i9j0-k1l2-3456-ghij-7890abcdefgh",
+      "name": "Publish to Instagram",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1640,
+        300
+      ],
+      "notes": "Publishes the media container to Instagram feed"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "success_condition",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "h8i9j0k1-l2m3-4567-hijk-890abcdefghi",
+      "name": "Check Publication Status",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1840,
+        300
+      ],
+      "notes": "Checks if the Instagram post was published successfully"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "success_message",
+              "name": "success_message",
+              "value": "✅ Licensify Instagram post published successfully at {{ $json.post_time }}! Post ID: {{ $('Publish to Instagram').item.json.id }}"
+            },
+            {
+              "id": "post_url",
+              "name": "post_url",
+              "value": "https://www.instagram.com/p/{{ $('Publish to Instagram').item.json.id }}/"
+            }
+          ]
+        }
+      },
+      "id": "i9j0k1l2-m3n4-5678-ijkl-90abcdefghij",
+      "name": "Success Response",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2040,
+        200
+      ],
+      "notes": "Formats success message with post details"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "error_message",
+              "name": "error_message",
+              "value": "❌ Failed to publish Licensify Instagram post. Please check your credentials and try again."
+            },
+            {
+              "id": "timestamp",
+              "name": "timestamp",
+              "value": "={{ new Date().toISOString() }}"
+            }
+          ]
+        }
+      },
+      "id": "j0k1l2m3-n4o5-6789-jklm-0abcdefghijk",
+      "name": "Error Response",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2040,
+        400
+      ],
+      "notes": "Formats error message for failed posts"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Prepare Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Content": {
+      "main": [
+        [
+          {
+            "node": "Generate AI Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate AI Image": {
+      "main": [
+        [
+          {
+            "node": "Wait for Image Generation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait for Image Generation": {
+      "main": [
+        [
+          {
+            "node": "Get Generated Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Generated Image": {
+      "main": [
+        [
+          {
+            "node": "Create Instagram Media Container",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Instagram Media Container": {
+      "main": [
+        [
+          {
+            "node": "Wait for Media Processing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait for Media Processing": {
+      "main": [
+        [
+          {
+            "node": "Publish to Instagram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Publish to Instagram": {
+      "main": [
+        [
+          {
+            "node": "Check Publication Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Publication Status": {
+      "main": [
+        [
+          {
+            "node": "Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1234567890abcdef",
+  "meta": {
+    "templateCreatedBy": "Licensify Social Media Automation",
+    "description": "Automated Instagram posting workflow for Licensify driving app. Posts 3 times daily with AI-generated images and driving-related content for learner drivers.",
+    "templateId": "licensify-instagram-automation"
+  },
+  "id": "licensify-instagram-workflow",
+  "tags": [
+    {
+      "createdAt": "2024-01-15T12:00:00.000Z",
+      "updatedAt": "2024-01-15T12:00:00.000Z",
+      "id": "social-media",
+      "name": "Social Media"
+    },
+    {
+      "createdAt": "2024-01-15T12:00:00.000Z",
+      "updatedAt": "2024-01-15T12:00:00.000Z",
+      "id": "instagram",
+      "name": "Instagram"
+    },
+    {
+      "createdAt": "2024-01-15T12:00:00.000Z",
+      "updatedAt": "2024-01-15T12:00:00.000Z",
+      "id": "licensify",
+      "name": "Licensify"
+    },
+    {
+      "createdAt": "2024-01-15T12:00:00.000Z",
+      "updatedAt": "2024-01-15T12:00:00.000Z",
+      "id": "driving-app",
+      "name": "Driving App"
+    }
+  ]
+} 
