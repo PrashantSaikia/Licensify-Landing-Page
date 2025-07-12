@@ -4,6 +4,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const finalEmailForm = document.querySelector('.final-email-form');
     const modal = document.getElementById('successModal');
     
+    // Initialize Supabase client
+    let supabase = null;
+    if (window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.url && window.SUPABASE_CONFIG.anonKey) {
+        supabase = window.supabase.createClient(
+            window.SUPABASE_CONFIG.url,
+            window.SUPABASE_CONFIG.anonKey
+        );
+    }
+    
     // Initialize animations and interactions
     initializeAnimations();
     initializeScrollEffects();
@@ -11,16 +20,16 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Handle both email forms
     if (emailForm) {
-        emailForm.addEventListener('submit', function(e) {
+        emailForm.addEventListener('submit', async function(e) {
             e.preventDefault();
-            handleEmailSubmission(this);
+            await handleEmailSubmission(this);
         });
     }
     
     if (finalEmailForm) {
-        finalEmailForm.addEventListener('submit', function(e) {
+        finalEmailForm.addEventListener('submit', async function(e) {
             e.preventDefault();
-            handleEmailSubmission(this);
+            await handleEmailSubmission(this);
         });
     }
     
@@ -187,7 +196,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Enhanced email submission handling
-    function handleEmailSubmission(form) {
+    async function handleEmailSubmission(form) {
         const emailInput = form.querySelector('input[type="email"]');
         const submitButton = form.querySelector('button[type="submit"]');
         const email = emailInput.value.trim();
@@ -198,8 +207,9 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // Check if email already exists
-        if (isEmailAlreadyRegistered(email)) {
+        // Check if email already exists (both locally and in Supabase)
+        const emailExists = await isEmailAlreadyRegistered(email);
+        if (emailExists) {
             showError(emailInput, 'This email is already registered for early access!');
             return;
         }
@@ -244,10 +254,38 @@ document.addEventListener('DOMContentLoaded', function() {
         return emailRegex.test(email) && email.length >= 5 && email.length <= 100;
     }
     
-    // Check if email is already registered
-    function isEmailAlreadyRegistered(email) {
+    // Check if email is already registered (both locally and in Supabase)
+    async function isEmailAlreadyRegistered(email) {
+        // Check local storage first
         const emails = JSON.parse(localStorage.getItem('licensifyEmails') || '[]');
-        return emails.includes(email.toLowerCase());
+        const localExists = emails.find(e => e.email === email.toLowerCase());
+        
+        if (localExists) {
+            return true;
+        }
+        
+        // Check Supabase database
+        if (supabase) {
+            try {
+                const { data, error } = await supabase
+                    .from('early_access_emails')
+                    .select('email')
+                    .eq('email', email.toLowerCase())
+                    .limit(1);
+                
+                if (error) {
+                    console.error('Error checking email in Supabase:', error);
+                    return false; // If we can't check, assume it doesn't exist
+                }
+                
+                return data && data.length > 0;
+            } catch (error) {
+                console.error('Error with Supabase email check:', error);
+                return false;
+            }
+        }
+        
+        return false;
     }
     
     // Show error message with animation
@@ -416,6 +454,41 @@ document.addEventListener('DOMContentLoaded', function() {
     function storeEmailWithTracking(email) {
         storeEmail(email);
         trackEmailSignup(email);
+        
+        // Also save to Supabase
+        saveEmailToSupabase(email);
+    }
+    
+    // Save email to Supabase database
+    async function saveEmailToSupabase(email) {
+        if (!supabase) {
+            console.log('Supabase not configured, skipping database save');
+            return;
+        }
+        
+        try {
+            const emailData = {
+                email: email.toLowerCase(),
+                created_at: new Date().toISOString(),
+                source: 'landing_page',
+                user_agent: navigator.userAgent,
+                referrer: document.referrer || 'direct',
+                ip_address: null // Will be filled by Supabase if needed
+            };
+            
+            const { data, error } = await supabase
+                .from('early_access_emails')
+                .insert([emailData]);
+            
+            if (error) {
+                console.error('Error saving email to Supabase:', error);
+                // Don't show error to user, just log it
+            } else {
+                console.log('Email successfully saved to Supabase:', data);
+            }
+        } catch (error) {
+            console.error('Error with Supabase operation:', error);
+        }
     }
     
     // Enhanced success modal
