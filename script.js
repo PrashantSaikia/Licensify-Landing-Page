@@ -254,17 +254,9 @@ document.addEventListener('DOMContentLoaded', function() {
         return emailRegex.test(email) && email.length >= 5 && email.length <= 100;
     }
     
-    // Check if email is already registered (both locally and in Supabase)
+    // Check if email is already registered (prioritize Supabase over localStorage)
     async function isEmailAlreadyRegistered(email) {
-        // Check local storage first
-        const emails = JSON.parse(localStorage.getItem('licensifyEmails') || '[]');
-        const localExists = emails.find(e => e.email === email.toLowerCase());
-        
-        if (localExists) {
-            return true;
-        }
-        
-        // Check Supabase database
+        // Check Supabase database first (authoritative source)
         if (supabase) {
             try {
                 const { data, error } = await supabase
@@ -275,17 +267,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 if (error) {
                     console.error('Error checking email in Supabase:', error);
-                    return false; // If we can't check, assume it doesn't exist
+                    // Fall back to localStorage check if Supabase fails
+                } else if (data && data.length > 0) {
+                    return true; // Email exists in Supabase
                 }
-                
-                return data && data.length > 0;
             } catch (error) {
                 console.error('Error with Supabase email check:', error);
-                return false;
+                // Fall back to localStorage check if Supabase fails
             }
         }
         
-        return false;
+        // Check local storage as fallback (less authoritative)
+        const emails = JSON.parse(localStorage.getItem('licensifyEmails') || '[]');
+        const localExists = emails.find(e => e.email === email.toLowerCase());
+        
+        return localExists ? true : false;
     }
     
     // Show error message with animation
@@ -436,16 +432,16 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
         
-        // Custom analytics endpoint (replace with your actual endpoint)
-        if (window.fetch) {
-            fetch('/api/analytics/signup', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(eventData)
-            }).catch(err => console.log('Analytics tracking failed:', err));
-        }
+        // Custom analytics endpoint (disabled for now - no backend endpoint available)
+        // if (window.fetch) {
+        //     fetch('/api/analytics/signup', {
+        //         method: 'POST',
+        //         headers: {
+        //             'Content-Type': 'application/json',
+        //         },
+        //         body: JSON.stringify(eventData)
+        //     }).catch(err => console.log('Analytics tracking failed:', err));
+        // }
         
         console.log('Email signup tracked:', eventData);
     }
