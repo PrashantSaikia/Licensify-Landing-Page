@@ -128,10 +128,10 @@ This should show your configuration. If it's undefined, check that `config.js` i
 
 The integration includes:
 
-- **Duplicate prevention**: Checks both local storage and Supabase database
-- **Error handling**: Gracefully handles connection issues
+- **Duplicate prevention**: Checks Supabase database for existing emails
+- **Error handling**: Gracefully handles connection issues  
 - **Automatic metadata**: Stores user agent, referrer, and timestamp
-- **Fallback storage**: Continues to work with localStorage if Supabase fails
+- **Single source of truth**: Uses only Supabase for email storage
 
 ## Database Schema
 

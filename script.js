@@ -13,10 +13,102 @@ document.addEventListener('DOMContentLoaded', function() {
         );
     }
     
+    // Initialize analytics tracking
+    initializeAnalytics();
+    
     // Initialize animations and interactions
     initializeAnimations();
     initializeScrollEffects();
     initializeHeaderScroll();
+    
+    // Analytics Functions
+    function generateSessionId() {
+        // Check if session ID already exists in sessionStorage
+        let sessionId = sessionStorage.getItem('licensify_session_id');
+        if (!sessionId) {
+            // Generate a unique session ID
+            sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            sessionStorage.setItem('licensify_session_id', sessionId);
+        }
+        return sessionId;
+    }
+    
+    async function trackPageVisit() {
+        if (!supabase) {
+            console.log('Supabase not initialized - skipping page visit tracking');
+            return;
+        }
+        
+        const sessionId = generateSessionId();
+        console.log('Tracking page visit for session:', sessionId);
+        
+        try {
+            const visitData = {
+                session_id: sessionId,
+                user_agent: navigator.userAgent,
+                referrer: document.referrer || 'direct',
+                page_url: 'landing_page'
+            };
+            
+            const { data, error } = await supabase
+                .from('page_visits')
+                .insert([visitData]);
+            
+            if (error) {
+                console.error('Error tracking page visit:', error);
+            } else {
+                console.log('Page visit tracked successfully');
+                // Get updated conversion rate
+                await updateConversionRate();
+            }
+        } catch (error) {
+            console.error('Error with page visit tracking:', error);
+        }
+    }
+    
+    async function updateConversionRate() {
+        if (!supabase) return;
+        
+        try {
+            const { data, error } = await supabase.rpc('get_analytics_dashboard');
+            
+            if (error) {
+                console.error('Error getting analytics:', error);
+            } else {
+                console.log('📊 REAL-TIME ANALYTICS:', data);
+                console.log(`🎯 Overall Conversion Rate: ${data.overall.conversion_rate}% (${data.overall.total_signups}/${data.overall.total_visitors})`);
+                console.log(`📅 Today's Conversion Rate: ${data.today.conversion_rate}% (${data.today.signups}/${data.today.visitors})`);
+                
+                // Store in window for easy access
+                window.licensifyAnalytics = data;
+            }
+        } catch (error) {
+            console.error('Error updating conversion rate:', error);
+        }
+    }
+    
+    function initializeAnalytics() {
+        console.log('🚀 Initializing Licensify Analytics...');
+        
+        // Track this page visit
+        trackPageVisit();
+        
+        // Make analytics functions globally available
+        window.getLicensifyAnalytics = updateConversionRate;
+        window.getConversionRate = async () => {
+            if (!supabase) return null;
+            try {
+                const { data, error } = await supabase.rpc('get_conversion_rate');
+                if (error) throw error;
+                return data;
+            } catch (error) {
+                console.error('Error getting conversion rate:', error);
+                return null;
+            }
+        };
+        
+        console.log('✅ Analytics initialized. Use window.getLicensifyAnalytics() to check stats');
+    }
     
     // Handle both email forms
     if (emailForm) {
@@ -220,10 +312,10 @@ document.addEventListener('DOMContentLoaded', function() {
         submitButton.disabled = true;
         submitButton.style.opacity = '0.7';
         
-        // Simulate API call with more realistic timing
-        setTimeout(() => {
+        // Process email signup with real-time analytics
+        setTimeout(async () => {
             // Store email and track signup
-            storeEmailWithTracking(email);
+            await storeEmailWithTracking(email);
             
             // Reset form with animation
             emailInput.value = '';
@@ -254,38 +346,41 @@ document.addEventListener('DOMContentLoaded', function() {
         return emailRegex.test(email) && email.length >= 5 && email.length <= 100;
     }
     
-    // Check if email is already registered (both locally and in Supabase)
+    // Check if email is already registered (Supabase only)
     async function isEmailAlreadyRegistered(email) {
-        // Check local storage first
-        const emails = JSON.parse(localStorage.getItem('licensifyEmails') || '[]');
-        const localExists = emails.find(e => e.email === email.toLowerCase());
+        console.log('Checking if email is already registered:', email);
         
-        if (localExists) {
-            return true;
+        // Check Supabase database only (single source of truth)
+        if (!supabase) {
+            console.error('Supabase not initialized - cannot check for duplicates');
+            return false; // Allow registration if Supabase not available
         }
         
-        // Check Supabase database
-        if (supabase) {
-            try {
-                const { data, error } = await supabase
-                    .from('early_access_emails')
-                    .select('email')
-                    .eq('email', email.toLowerCase())
-                    .limit(1);
-                
-                if (error) {
-                    console.error('Error checking email in Supabase:', error);
-                    return false; // If we can't check, assume it doesn't exist
-                }
-                
-                return data && data.length > 0;
-            } catch (error) {
-                console.error('Error with Supabase email check:', error);
+        try {
+            console.log('Checking Supabase for email:', email.toLowerCase());
+            const { data, error } = await supabase
+                .from('early_access_emails')
+                .select('email')
+                .eq('email', email.toLowerCase())
+                .limit(1);
+            
+            if (error) {
+                console.error('Error checking email in Supabase:', error);
+                return false; // Allow registration if query fails
+            }
+            
+            console.log('Supabase query result:', data);
+            if (data && data.length > 0) {
+                console.log('Email found in Supabase - already registered');
+                return true; // Email exists in Supabase
+            } else {
+                console.log('Email not found in Supabase - can register');
                 return false;
             }
+        } catch (error) {
+            console.error('Error with Supabase operation:', error);
+            return false; // Allow registration if operation fails
         }
-        
-        return false;
     }
     
     // Show error message with animation
@@ -394,54 +489,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 3000);
     }
     
-    // Enhanced email storage with additional data
-    function storeEmail(email) {
-        const emails = JSON.parse(localStorage.getItem('licensifyEmails') || '[]');
-        const emailData = {
-            email: email.toLowerCase(),
-            timestamp: new Date().toISOString(),
-            source: 'landing_page',
-            userAgent: navigator.userAgent,
-            referrer: document.referrer || 'direct'
-        };
-        
-        // Add email data if it doesn't exist
-        if (!emails.find(e => e.email === emailData.email)) {
-            emails.push(emailData);
-            localStorage.setItem('licensifyEmails', JSON.stringify(emails));
-        }
-        
-        // Store additional analytics data
-        localStorage.setItem('licensifyStats', JSON.stringify({
-            totalSignups: emails.length,
-            lastSignup: emailData.timestamp,
-            conversionRate: calculateConversionRate()
-        }));
-        
-        console.log('Email stored:', emailData);
-        console.log('Total signups:', emails.length);
-    }
+    // Note: localStorage-based email storage removed - now using Supabase only
     
-    // Calculate conversion rate
-    function calculateConversionRate() {
-        const pageViews = parseInt(localStorage.getItem('licensifyPageViews') || '0') + 1;
-        const signups = JSON.parse(localStorage.getItem('licensifyEmails') || '[]').length;
-        localStorage.setItem('licensifyPageViews', pageViews.toString());
-        return ((signups / pageViews) * 100).toFixed(2);
-    }
-    
-    // Enhanced analytics tracking
+    // Analytics tracking (external services only)
     function trackEmailSignup(email) {
-        const eventData = {
-            event: 'email_signup',
-            email: email,
-            source: 'landing_page',
-            timestamp: new Date().toISOString(),
-            page_url: window.location.href,
-            user_agent: navigator.userAgent
-        };
+        console.log('Tracking email signup:', email);
         
-        // Google Analytics 4 example
+        // Google Analytics 4
         if (typeof gtag !== 'undefined') {
             gtag('event', 'email_signup', {
                 'email': email,
@@ -449,38 +503,35 @@ document.addEventListener('DOMContentLoaded', function() {
                 'value': 1,
                 'currency': 'GBP'
             });
+            console.log('Google Analytics event tracked');
         }
         
-        // Facebook Pixel example
+        // Facebook Pixel
         if (typeof fbq !== 'undefined') {
             fbq('track', 'Lead', {
                 'email': email,
                 'content_name': 'Licensify Early Access',
                 'content_category': 'Lead Generation'
             });
+            console.log('Facebook Pixel event tracked');
         }
         
-        // Custom analytics endpoint (replace with your actual endpoint)
-        if (window.fetch) {
-            fetch('/api/analytics/signup', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(eventData)
-            }).catch(err => console.log('Analytics tracking failed:', err));
-        }
-        
-        console.log('Email signup tracked:', eventData);
+        // Note: Custom analytics endpoint was disabled - no backend available
+        console.log('Email signup tracking completed');
     }
     
-    // Store email with enhanced tracking
-    function storeEmailWithTracking(email) {
-        storeEmail(email);
+    // Process email signup (Supabase storage + analytics tracking)
+    async function storeEmailWithTracking(email) {
+        // Track analytics events
         trackEmailSignup(email);
         
-        // Also save to Supabase
-        saveEmailToSupabase(email);
+        // Save to Supabase database (primary storage)
+        await saveEmailToSupabase(email);
+        
+        // Update conversion rate analytics
+        await updateConversionRate();
+        
+        console.log('Email signup processing completed for:', email);
     }
     
     // Save email to Supabase database
@@ -488,6 +539,25 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!supabase) {
             console.log('Supabase not configured, skipping database save');
             return;
+        }
+        
+        // Double-check if email exists before inserting
+        try {
+            console.log('Double-checking email before save:', email.toLowerCase());
+            const { data: existingEmail, error: checkError } = await supabase
+                .from('early_access_emails')
+                .select('email')
+                .eq('email', email.toLowerCase())
+                .limit(1);
+            
+            if (checkError) {
+                console.error('Error checking email before save:', checkError);
+            } else if (existingEmail && existingEmail.length > 0) {
+                console.log('Email already exists in Supabase, skipping insert');
+                return;
+            }
+        } catch (error) {
+            console.error('Error checking email before save:', error);
         }
         
         try {
@@ -500,13 +570,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 ip_address: null // Will be filled by Supabase if needed
             };
             
+            console.log('Inserting email into Supabase:', emailData);
             const { data, error } = await supabase
                 .from('early_access_emails')
                 .insert([emailData]);
             
             if (error) {
                 console.error('Error saving email to Supabase:', error);
-                // Don't show error to user, just log it
+                // Check if it's a unique constraint error (email already exists)
+                if (error.code === '23505' || error.message.includes('duplicate') || error.message.includes('unique')) {
+                    console.log('Email already exists in database (unique constraint)');
+                } else {
+                    console.error('Other database error:', error);
+                }
             } else {
                 console.log('Email successfully saved to Supabase:', data);
             }

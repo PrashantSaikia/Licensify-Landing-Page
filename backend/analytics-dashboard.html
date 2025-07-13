@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Licensify Analytics Dashboard</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f7f8fa;
+        }
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .card h3 {
+            margin: 0 0 16px 0;
+            color: #1e3a5f;
+            font-size: 18px;
+        }
+        .metric {
+            font-size: 32px;
+            font-weight: 600;
+            color: #1e3a5f;
+            margin: 8px 0;
+        }
+        .conversion-rate {
+            color: #4ade80;
+        }
+        .label {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        .refresh-btn {
+            background: #1e3a5f;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .refresh-btn:hover {
+            background: #2a4a73;
+        }
+        .error {
+            color: #ef4444;
+            background: #fef2f2;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .loading {
+            color: #6b7280;
+            font-style: italic;
+        }
+        .last-updated {
+            color: #9ca3af;
+            font-size: 12px;
+            margin-top: 16px;
+        }
+    </style>
+</head>
+<body>
+    <h1>📊 Licensify Analytics Dashboard</h1>
+    
+    <div id="error-message" class="error" style="display: none;"></div>
+    
+    <div class="dashboard">
+        <div class="card">
+            <h3>Overall Conversion Rate</h3>
+            <div class="label">Total Performance</div>
+            <div class="metric conversion-rate" id="overall-rate">Loading...</div>
+            <div class="label">
+                <span id="overall-signups">-</span> signups / <span id="overall-visitors">-</span> visitors
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3>Today's Conversion Rate</h3>
+            <div class="label">Today's Performance</div>
+            <div class="metric conversion-rate" id="today-rate">Loading...</div>
+            <div class="label">
+                <span id="today-signups">-</span> signups / <span id="today-visitors">-</span> visitors
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3>Total Email Signups</h3>
+            <div class="label">All Time</div>
+            <div class="metric" id="total-signups">Loading...</div>
+        </div>
+        
+        <div class="card">
+            <h3>Unique Visitors</h3>
+            <div class="label">All Time</div>
+            <div class="metric" id="total-visitors">Loading...</div>
+        </div>
+    </div>
+    
+    <button class="refresh-btn" onclick="refreshAnalytics()">🔄 Refresh Analytics</button>
+    
+    <div class="last-updated" id="last-updated"></div>
+
+    <!-- Include your Supabase config -->
+    <script src="config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script>
+        let supabase = null;
+        
+        // Initialize Supabase
+        if (window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.url && window.SUPABASE_CONFIG.anonKey) {
+            supabase = window.supabase.createClient(
+                window.SUPABASE_CONFIG.url,
+                window.SUPABASE_CONFIG.anonKey
+            );
+        }
+        
+        async function refreshAnalytics() {
+            if (!supabase) {
+                showError('Supabase not configured. Please check your config.js file.');
+                return;
+            }
+            
+            try {
+                // Show loading state
+                document.querySelectorAll('.metric').forEach(el => {
+                    el.textContent = 'Loading...';
+                    el.classList.add('loading');
+                });
+                
+                // Get analytics data
+                const { data, error } = await supabase.rpc('get_analytics_dashboard');
+                
+                if (error) {
+                    throw error;
+                }
+                
+                // Update the dashboard
+                updateDashboard(data);
+                hideError();
+                
+                console.log('Analytics refreshed:', data);
+                
+            } catch (error) {
+                console.error('Error refreshing analytics:', error);
+                showError('Error loading analytics: ' + error.message);
+            }
+        }
+        
+        function updateDashboard(data) {
+            // Remove loading state
+            document.querySelectorAll('.metric').forEach(el => {
+                el.classList.remove('loading');
+            });
+            
+            // Overall stats
+            document.getElementById('overall-rate').textContent = data.overall.conversion_rate + '%';
+            document.getElementById('overall-signups').textContent = data.overall.total_signups;
+            document.getElementById('overall-visitors').textContent = data.overall.total_visitors;
+            
+            // Today's stats
+            document.getElementById('today-rate').textContent = data.today.conversion_rate + '%';
+            document.getElementById('today-signups').textContent = data.today.signups;
+            document.getElementById('today-visitors').textContent = data.today.visitors;
+            
+            // Totals
+            document.getElementById('total-signups').textContent = data.overall.total_signups;
+            document.getElementById('total-visitors').textContent = data.overall.total_visitors;
+            
+            // Last updated
+            document.getElementById('last-updated').textContent = 
+                'Last updated: ' + new Date(data.last_updated).toLocaleString();
+        }
+        
+        function showError(message) {
+            const errorEl = document.getElementById('error-message');
+            errorEl.textContent = message;
+            errorEl.style.display = 'block';
+        }
+        
+        function hideError() {
+            document.getElementById('error-message').style.display = 'none';
+        }
+        
+        // Auto-refresh every 30 seconds
+        setInterval(refreshAnalytics, 30000);
+        
+        // Load analytics on page load
+        refreshAnalytics();
+        
+        console.log('📊 Analytics Dashboard loaded. Data refreshes every 30 seconds.');
+    </script>
+</body>
+</html> 
