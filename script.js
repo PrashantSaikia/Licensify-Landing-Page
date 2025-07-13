@@ -300,12 +300,20 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Check if email already exists in Supabase
+        console.log('=== DEBUGGING DUPLICATE CHECK ===');
+        console.log('About to check email:', email);
+        console.log('Supabase client available:', !!supabase);
+        console.log('SUPABASE_CONFIG:', window.SUPABASE_CONFIG);
+        
         try {
             const emailExists = await isEmailAlreadyRegistered(email);
+            console.log('isEmailAlreadyRegistered returned:', emailExists);
             if (emailExists) {
+                console.log('Email already exists - showing error');
                 showError(emailInput, 'This email is already registered for early access!');
                 return;
             }
+            console.log('Email does not exist - proceeding with registration');
         } catch (error) {
             console.error('Error checking email registration:', error);
             showError(emailInput, 'Unable to verify email. Please try again.');
@@ -366,7 +374,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Check if email is already registered (Supabase only)
     async function isEmailAlreadyRegistered(email) {
+        console.log('=== INSIDE isEmailAlreadyRegistered ===');
         console.log('Checking if email is already registered:', email);
+        console.log('Supabase client in function:', !!supabase);
         
         // Check Supabase database only (single source of truth)
         if (!supabase) {
@@ -384,10 +394,15 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (error) {
                 console.error('Error checking email in Supabase:', error);
+                console.error('Error details:', error);
                 throw new Error('Database query failed: ' + error.message);
             }
             
             console.log('Supabase query result:', data);
+            console.log('Data type:', typeof data);
+            console.log('Data is array:', Array.isArray(data));
+            console.log('Data length:', data ? data.length : 'data is null/undefined');
+            
             if (data && data.length > 0) {
                 console.log('Email found in Supabase - already registered');
                 return true; // Email exists in Supabase
@@ -397,6 +412,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         } catch (error) {
             console.error('Error with Supabase operation:', error);
+            console.error('Error stack:', error.stack);
             throw error; // Re-throw the error instead of returning false
         }
     }
