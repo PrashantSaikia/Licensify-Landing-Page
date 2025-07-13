@@ -72,21 +72,40 @@ SELECT COUNT(*) as signups FROM early_access_emails;
 
 ## 📈 What Gets Tracked
 
-### Page Visits
+### Database Tables
+
+#### 1. `page_visits` table ✅ (Active)
 - Unique session IDs (not cookies)
 - User agent information
 - Referrer sources
 - Timestamps
 
-### Email Signups
+#### 2. `early_access_emails` table ✅ (Active)
 - Email addresses (your existing table)
 - Signup timestamps
 - Source tracking
+
+#### 3. `daily_stats` table ⚠️ (Empty - Optional)
+- **Status**: Currently empty (not auto-populated)
+- **Purpose**: Daily aggregated statistics for performance optimization
+- **Population**: Requires manual setup (see below)
 
 ### Conversion Rate Calculation
 ```
 Conversion Rate = (Email Signups / Unique Visitors) × 100
 ```
+
+**Note**: Analytics are calculated in real-time from raw data, so the `daily_stats` table is optional.
+
+### 🔄 Daily Stats Population (Optional)
+
+If you want to populate the `daily_stats` table with daily summaries:
+
+1. **Manual Option**: Run `backend/daily-stats-update.sql` daily in your Supabase SQL editor
+2. **Automated Option**: Set up a Supabase Edge Function with cron scheduling
+3. **Skip Option**: Keep using real-time calculations (recommended for most users)
+
+The current implementation works perfectly without the `daily_stats` table!
 
 ## 🔄 Real-Time Updates
 
