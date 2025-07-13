@@ -43,11 +43,16 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Tracking page visit for session:', sessionId);
         
         try {
+            // Get user's location from IP geolocation
+            const location = await getUserLocation();
+            
             const visitData = {
                 session_id: sessionId,
                 user_agent: navigator.userAgent,
                 referrer: document.referrer || 'direct',
-                page_url: 'landing_page'
+                page_url: 'landing_page',
+                country: location.country,
+                city: location.city
             };
             
             const { data, error } = await supabase
@@ -57,13 +62,38 @@ document.addEventListener('DOMContentLoaded', function() {
             if (error) {
                 console.error('Error tracking page visit:', error);
             } else {
-                console.log('Page visit tracked successfully');
+                const locationStr = [location.city, location.country].filter(Boolean).join(', ');
+                console.log('Page visit tracked successfully', locationStr ? `from ${locationStr}` : '');
                 // Get updated conversion rate
                 await updateConversionRate();
             }
         } catch (error) {
             console.error('Error with page visit tracking:', error);
         }
+    }
+    
+    async function getUserLocation() {
+        try {
+            // Use ipapi.co for free IP geolocation (no API key required)
+            const response = await fetch('https://ipapi.co/json/', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                return {
+                    country: data.country_name || null,
+                    city: data.city || null
+                };
+            }
+        } catch (error) {
+            console.log('Could not determine location:', error.message);
+        }
+        
+        return { country: null, city: null }; // Return null values if location detection fails
     }
     
     async function updateConversionRate() {

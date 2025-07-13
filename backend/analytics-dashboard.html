@@ -72,6 +72,42 @@
             font-size: 12px;
             margin-top: 16px;
         }
+        .country-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        .country-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border-left: 4px solid #dc2626;
+        }
+        .country-name {
+            font-weight: 500;
+            color: #1e3a5f;
+        }
+        .country-stats {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        .country-percentage {
+            font-weight: 600;
+            color: #dc2626;
+        }
+        .empty-state {
+            text-align: center;
+            color: #6b7280;
+            font-style: italic;
+            padding: 24px;
+        }
     </style>
 </head>
 <body>
@@ -111,7 +147,21 @@
         </div>
     </div>
     
-    <button class="refresh-btn" onclick="refreshAnalytics()">🔄 Refresh Analytics</button>
+    <!-- Geographic Statistics Section -->
+    <div class="dashboard">
+        <div class="card">
+            <h3>Visitor Countries</h3>
+            <div class="label">By Country</div>
+            <div id="country-stats">Loading country data...</div>
+        </div>
+        <div class="card">
+            <h3>Visitor Cities</h3>
+            <div class="label">By City</div>
+            <div id="city-stats">Loading city data...</div>
+        </div>
+    </div>
+    
+    <button class="refresh-btn" onclick="refreshAnalytics()">Refresh Analytics</button>
     
     <div class="last-updated" id="last-updated"></div>
 
@@ -142,19 +192,35 @@
                     el.textContent = 'Loading...';
                     el.classList.add('loading');
                 });
+                document.getElementById('country-stats').innerHTML = 'Loading country data...';
+                document.getElementById('city-stats').innerHTML = 'Loading city data...';
                 
-                // Get analytics data
-                const { data, error } = await supabase.rpc('get_analytics_dashboard');
+                // Get analytics data, country stats, and city stats in parallel
+                const [analyticsResult, countryResult, cityResult] = await Promise.all([
+                    supabase.rpc('get_analytics_dashboard'),
+                    supabase.rpc('get_country_stats'),
+                    supabase.rpc('get_city_stats')
+                ]);
                 
-                if (error) {
-                    throw error;
+                if (analyticsResult.error) {
+                    throw analyticsResult.error;
+                }
+                
+                if (countryResult.error) {
+                    console.warn('Could not load country stats:', countryResult.error);
+                }
+                
+                if (cityResult.error) {
+                    console.warn('Could not load city stats:', cityResult.error);
                 }
                 
                 // Update the dashboard
-                updateDashboard(data);
+                updateDashboard(analyticsResult.data, countryResult.data || [], cityResult.data || []);
                 hideError();
                 
-                console.log('Analytics refreshed:', data);
+                console.log('Analytics refreshed:', analyticsResult.data);
+                console.log('Country stats:', countryResult.data);
+                console.log('City stats:', cityResult.data);
                 
             } catch (error) {
                 console.error('Error refreshing analytics:', error);
@@ -162,29 +228,117 @@
             }
         }
         
-        function updateDashboard(data) {
+        function updateDashboard(data, countryStats, cityStats) {
             // Remove loading state
             document.querySelectorAll('.metric').forEach(el => {
                 el.classList.remove('loading');
             });
             
             // Overall stats
-            document.getElementById('overall-rate').textContent = data.overall.conversion_rate + '%';
-            document.getElementById('overall-signups').textContent = data.overall.total_signups;
-            document.getElementById('overall-visitors').textContent = data.overall.total_visitors;
+            document.getElementById('overall-rate').textContent = data.conversion_rate + '%';
+            document.getElementById('overall-signups').textContent = data.total_signups;
+            document.getElementById('overall-visitors').textContent = data.total_visitors;
             
             // Today's stats
-            document.getElementById('today-rate').textContent = data.today.conversion_rate + '%';
-            document.getElementById('today-signups').textContent = data.today.signups;
-            document.getElementById('today-visitors').textContent = data.today.visitors;
+            document.getElementById('today-rate').textContent = data.today_conversion_rate + '%';
+            document.getElementById('today-signups').textContent = data.today_signups;
+            document.getElementById('today-visitors').textContent = data.today_visitors;
             
             // Totals
-            document.getElementById('total-signups').textContent = data.overall.total_signups;
-            document.getElementById('total-visitors').textContent = data.overall.total_visitors;
+            document.getElementById('total-signups').textContent = data.total_signups;
+            document.getElementById('total-visitors').textContent = data.total_visitors;
+            
+            // Geographic statistics
+            displayCountryStats(countryStats);
+            displayCityStats(cityStats);
             
             // Last updated
             document.getElementById('last-updated').textContent = 
-                'Last updated: ' + new Date(data.last_updated).toLocaleString();
+                'Last updated: ' + new Date().toLocaleString();
+        }
+        
+        function displayCountryStats(countryStats) {
+            const container = document.getElementById('country-stats');
+            
+            if (!countryStats || countryStats.length === 0) {
+                container.innerHTML = '<div class="empty-state">No country data available yet. Visit tracking will populate this section as visitors arrive.</div>';
+                return;
+            }
+            
+            const countryList = document.createElement('div');
+            countryList.className = 'country-list';
+            
+            countryStats.slice(0, 10).forEach(country => { // Show top 10 countries
+                const countryItem = document.createElement('div');
+                countryItem.className = 'country-item';
+                
+                countryItem.innerHTML = `
+                    <div class="country-name">${country.country}</div>
+                    <div class="country-stats">
+                        <span>${country.visitors} visitor${country.visitors !== 1 ? 's' : ''}</span>
+                        <span class="country-percentage">${country.percentage}%</span>
+                    </div>
+                `;
+                
+                countryList.appendChild(countryItem);
+            });
+            
+            container.innerHTML = '';
+            container.appendChild(countryList);
+            
+            if (countryStats.length > 10) {
+                const moreText = document.createElement('div');
+                moreText.style.textAlign = 'center';
+                moreText.style.color = '#6b7280';
+                moreText.style.fontSize = '14px';
+                moreText.style.marginTop = '12px';
+                moreText.textContent = `... and ${countryStats.length - 10} more countries`;
+                container.appendChild(moreText);
+            }
+        }
+        
+        function displayCityStats(cityStats) {
+            const container = document.getElementById('city-stats');
+            
+            if (!cityStats || cityStats.length === 0) {
+                container.innerHTML = '<div class="empty-state">No city data available yet. Visit tracking will populate this section as visitors arrive.</div>';
+                return;
+            }
+            
+            const cityList = document.createElement('div');
+            cityList.className = 'country-list'; // Reuse same styling
+            
+            cityStats.slice(0, 8).forEach(cityData => { // Show top 8 cities
+                const cityItem = document.createElement('div');
+                cityItem.className = 'country-item';
+                
+                // Show city and country (if available)
+                const locationName = cityData.city === 'Unknown' ? 'Unknown Location' : 
+                    `${cityData.city}${cityData.country && cityData.country !== 'Unknown' ? ', ' + cityData.country : ''}`;
+                
+                cityItem.innerHTML = `
+                    <div class="country-name">${locationName}</div>
+                    <div class="country-stats">
+                        <span>${cityData.visitors} visitor${cityData.visitors !== 1 ? 's' : ''}</span>
+                        <span class="country-percentage">${cityData.percentage}%</span>
+                    </div>
+                `;
+                
+                cityList.appendChild(cityItem);
+            });
+            
+            container.innerHTML = '';
+            container.appendChild(cityList);
+            
+            if (cityStats.length > 8) {
+                const moreText = document.createElement('div');
+                moreText.style.textAlign = 'center';
+                moreText.style.color = '#6b7280';
+                moreText.style.fontSize = '14px';
+                moreText.style.marginTop = '12px';
+                moreText.textContent = `... and ${cityStats.length - 8} more cities`;
+                container.appendChild(moreText);
+            }
         }
         
         function showError(message) {
@@ -203,7 +357,41 @@
         // Load analytics on page load
         refreshAnalytics();
         
+        // Expose functions for console use
+        window.getCountryStats = async function() {
+            if (!supabase) {
+                console.error('Supabase not initialized');
+                return;
+            }
+            const { data, error } = await supabase.rpc('get_country_stats');
+            if (error) {
+                console.error('Error:', error);
+            } else {
+                console.table(data);
+                return data;
+            }
+        };
+        
+        window.getCityStats = async function() {
+            if (!supabase) {
+                console.error('Supabase not initialized');
+                return;
+            }
+            const { data, error } = await supabase.rpc('get_city_stats');
+            if (error) {
+                console.error('Error:', error);
+            } else {
+                console.table(data);
+                return data;
+            }
+        };
+        
         console.log('📊 Analytics Dashboard loaded. Data refreshes every 30 seconds.');
+        console.log('🌍 Geographic tracking enabled - visitor countries and cities detected via IP geolocation');
+        console.log('💡 Console commands available:');
+        console.log('   - getAnalytics() - Get analytics data');
+        console.log('   - getCountryStats() - Get visitor country statistics');
+        console.log('   - getCityStats() - Get visitor city statistics');
     </script>
 </body>
 </html> 
