@@ -18,8 +18,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://db.onlinewebfonts.com/c/cb3bb192300d6a868fec9a0dbedf6c50?family=Nexa+W01+Black" rel="stylesheet">
     
-    <!-- Privacy Policy Script - Must be placed before any third-party scripts that require user consent -->
-    <script id="usercentrics-ppg" privacy-policy-id="9045f5b2-27e8-4080-8598-0f511f3a80ae" src="https://policygenerator.usercentrics.eu/api/privacy-policy" > </script>
+    <!-- Privacy Policy will be loaded from local markdown file -->
     
     <!-- Supabase JavaScript Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -213,15 +212,6 @@
                     </ul>
                 </div>
                 <div class="footer-section">
-                    <h4>Features</h4>
-                    <ul>
-                        <li><a href="#theory">Theory Practice</a></li>
-                        <li><a href="#hazard">Hazard Perception</a></li>
-                        <li><a href="#instructors">Find Instructors</a></li>
-                        <li><a href="#mock-tests">Mock Tests</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
                     <h4>Support</h4>
                     <ul>
                         <li><a href="#faq">FAQ</a></li>
@@ -267,12 +257,12 @@
 
     <!-- Privacy Policy Section -->
     <section id="privacy-policy" class="privacy-policy-section" style="display: none;">
-        <div class="container">
-            <div class="privacy-policy-content">
-                <h2>Privacy Policy</h2>
-                <button onclick="hidePrivacyPolicy()" class="close-privacy-button">×</button>
+        <div class="privacy-policy-content">
+            <h2>Privacy Policy</h2>
+            <button onclick="hidePrivacyPolicy()" class="close-privacy-button">×</button>
+            <div class="privacy-policy-scroll">
                 <!-- Privacy Policy will be displayed here -->
-                <div class="uc-privacy-policy"></div>
+                <div class="uc-privacy-policy" id="privacy-policy-content"></div>
             </div>
         </div>
     </section>

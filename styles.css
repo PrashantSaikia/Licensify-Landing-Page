@@ -482,7 +482,7 @@ body {
 /* Footer in Hero - reuse existing footer styles */
 .footer-in-hero .footer-content {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 3rem;
     margin: 0 auto 3rem;
     padding: 0;
@@ -585,7 +585,7 @@ body {
 
 .footer-content {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 3rem;
     margin-bottom: 3rem;
 }
@@ -797,74 +797,286 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(30, 58, 95, 0.9);
+    backdrop-filter: blur(10px);
     z-index: 10000;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 2rem;
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 .privacy-policy-content {
-    background: white;
-    border-radius: 20px;
-    padding: 2rem;
-    max-width: 800px;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(20px);
+    border-radius: 25px;
+    padding: 0;
+    max-width: 900px;
     width: 100%;
-    max-height: 80vh;
-    overflow-y: auto;
+    max-height: 85vh;
+    overflow: hidden;
     position: relative;
+    box-shadow: 0 25px 50px rgba(30, 58, 95, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    animation: slideInUp 0.4s ease-out;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .privacy-policy-content h2 {
-    font-size: 2rem;
-    margin-bottom: 2rem;
-    color: #2d3748;
+    font-size: 2.2rem;
+    margin: 0;
+    padding: 2rem 2rem 0.5rem;
+    color: #1e3a5f;
     text-align: center;
     font-weight: 600;
+    background: linear-gradient(135deg, #f7f8fa 0%, #e2e8f0 100%);
+    border-radius: 25px 25px 0 0;
+    border-bottom: none;
+}
+
+.privacy-policy-subtitle {
+    font-size: 1.1rem;
+    color: #5a7a9f;
+    text-align: center;
+    font-weight: 500;
+    padding: 0 2rem 1rem;
+    margin: 0;
+    background: linear-gradient(135deg, #f7f8fa 0%, #e2e8f0 100%);
+    border-bottom: 1px solid rgba(30, 58, 95, 0.1);
 }
 
 .close-privacy-button {
     position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: none;
+    top: 1.5rem;
+    right: 1.5rem;
+    background: rgba(255, 255, 255, 0.9);
     border: none;
-    font-size: 2rem;
+    font-size: 1.5rem;
     cursor: pointer;
-    color: #999;
-    transition: color 0.3s ease;
+    color: #5a7a9f;
+    transition: all 0.3s ease;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(30, 58, 95, 0.1);
+    z-index: 1;
 }
 
 .close-privacy-button:hover {
-    color: #4299e1;
+    background: rgba(220, 38, 38, 0.1);
+    color: #dc2626;
+    transform: scale(1.1);
+}
+
+.privacy-policy-scroll {
+    max-height: calc(85vh - 140px);
+    overflow-y: auto;
+    padding: 2rem;
+    scroll-behavior: smooth;
+}
+
+.privacy-policy-scroll::-webkit-scrollbar {
+    width: 8px;
+}
+
+.privacy-policy-scroll::-webkit-scrollbar-track {
+    background: rgba(30, 58, 95, 0.05);
+    border-radius: 10px;
+}
+
+.privacy-policy-scroll::-webkit-scrollbar-thumb {
+    background: rgba(30, 58, 95, 0.2);
+    border-radius: 10px;
+}
+
+.privacy-policy-scroll::-webkit-scrollbar-thumb:hover {
+    background: rgba(30, 58, 95, 0.3);
 }
 
 .uc-privacy-policy {
-    line-height: 1.6;
-    color: #4a4a4a;
+    line-height: 1.7;
+    color: #4a5568;
+    font-size: 1rem;
 }
 
 .uc-privacy-policy h1,
 .uc-privacy-policy h2,
 .uc-privacy-policy h3 {
-    color: #2d3748;
-    margin-bottom: 1rem;
+    color: #1e3a5f;
+    margin-bottom: 1.2rem;
+    margin-top: 1.8rem;
     font-weight: 600;
+    position: relative;
+    padding-bottom: 0.4rem;
+    line-height: 1.3;
+}
+
+/* Hide duplicate Privacy Policy heading in content - more aggressive approach */
+.uc-privacy-policy h1:first-child,
+.uc-privacy-policy h2:first-child,
+.uc-privacy-policy h1:first-of-type,
+.uc-privacy-policy h2:first-of-type {
+    display: none !important;
+}
+
+/* Also hide any heading that contains just "Privacy Policy" */
+.uc-privacy-policy h1[style*="display: none"],
+.uc-privacy-policy h2[style*="display: none"] {
+    display: none !important;
+}
+
+/* First visible heading should not have top margin */
+.uc-privacy-policy > *:first-child,
+.uc-privacy-policy > h1:first-child + *,
+.uc-privacy-policy > h2:first-child + * {
+    margin-top: 0 !important;
+}
+
+.uc-privacy-policy h1 {
+    font-size: 1.8rem !important;
+    border-bottom: 2px solid #dc2626;
+    padding-bottom: 0.4rem;
+    padding-top: 0.3rem;
+}
+
+.uc-privacy-policy h2 {
+    font-size: 1.6rem !important;
+    border-bottom: 1px solid rgba(30, 58, 95, 0.2);
+    padding-bottom: 0.4rem;
+    padding-top: 0.3rem;
+}
+
+.uc-privacy-policy h3 {
+    font-size: 1.4rem !important;
+    color: #2d3748;
+    border-bottom: 1px solid rgba(30, 58, 95, 0.1);
+    padding-bottom: 0.3rem;
+    padding-top: 0.2rem;
 }
 
 .uc-privacy-policy p {
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
+    text-align: justify;
+    hyphens: auto;
 }
 
 .uc-privacy-policy ul,
 .uc-privacy-policy ol {
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
     padding-left: 2rem;
+    background: rgba(247, 248, 250, 0.5);
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    border-left: 4px solid #dc2626;
 }
 
 .uc-privacy-policy li {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
+    position: relative;
+}
+
+.uc-privacy-policy li::marker {
+    color: #dc2626;
+    font-weight: 600;
+}
+
+.uc-privacy-policy strong {
+    color: #1e3a5f;
+    font-weight: 600;
+}
+
+.uc-privacy-policy a {
+    color: #dc2626;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border-bottom: 1px solid transparent;
+}
+
+.uc-privacy-policy a:hover {
+    color: #b91c1c;
+    border-bottom-color: #b91c1c;
+}
+
+/* Mobile responsive for privacy policy */
+@media (max-width: 768px) {
+    .privacy-policy-section {
+        padding: 1rem;
+    }
+    
+    .privacy-policy-content {
+        max-height: 90vh;
+        border-radius: 20px;
+    }
+    
+    .privacy-policy-content h2 {
+        font-size: 1.8rem;
+        padding: 1.5rem 1.5rem 0.5rem;
+    }
+    
+    .privacy-policy-subtitle {
+        font-size: 1rem;
+        padding: 0 1.5rem 0.75rem;
+    }
+    
+    .close-privacy-button {
+        top: 1rem;
+        right: 1rem;
+        width: 35px;
+        height: 35px;
+        font-size: 1.25rem;
+    }
+    
+    .privacy-policy-scroll {
+        padding: 1.5rem;
+        max-height: calc(90vh - 120px);
+    }
+    
+    .uc-privacy-policy {
+        font-size: 0.95rem;
+    }
+    
+    .uc-privacy-policy h1 {
+        font-size: 1.5rem !important;
+        margin-top: 1.4rem;
+        margin-bottom: 1rem;
+    }
+    
+    .uc-privacy-policy h2 {
+        font-size: 1.3rem !important;
+        margin-top: 1.4rem;
+        margin-bottom: 1rem;
+    }
+    
+    .uc-privacy-policy h3 {
+        font-size: 1.2rem !important;
+        margin-top: 1.2rem;
+        margin-bottom: 0.8rem;
+    }
+    
+    .uc-privacy-policy ul,
+    .uc-privacy-policy ol {
+        padding: 1rem 1.5rem;
+    }
 }
 
 /* Responsive Design */
