@@ -360,8 +360,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 submitButton.disabled = false;
                 submitButton.style.opacity = '1';
                 
-                // Show error message
-                showError(emailInput, 'Unable to save email. Please try again.');
+                // Check if it's a duplicate email error
+                if (error.message === 'DUPLICATE_EMAIL') {
+                    console.log('Showing duplicate email error to user');
+                    showError(emailInput, 'This email is already registered for early access!');
+                } else {
+                    // Show generic error message for other errors
+                    showError(emailInput, 'Unable to save email. Please try again.');
+                }
             }
         }, 1200);
     }
@@ -395,7 +401,11 @@ document.addEventListener('DOMContentLoaded', function() {
             if (error) {
                 console.error('Error checking email in Supabase:', error);
                 console.error('Error details:', error);
-                throw new Error('Database query failed: ' + error.message);
+                
+                // If error is due to RLS policy, we can't check duplicates
+                // So we'll rely on the unique constraint in the insert operation
+                console.log('Cannot check duplicates due to RLS - will rely on unique constraint');
+                return false; // Allow the insert to proceed and handle constraint violation
             }
             
             console.log('Supabase query result:', data);
@@ -413,7 +423,10 @@ document.addEventListener('DOMContentLoaded', function() {
         } catch (error) {
             console.error('Error with Supabase operation:', error);
             console.error('Error stack:', error.stack);
-            throw error; // Re-throw the error instead of returning false
+            
+            // If we can't check due to permissions, rely on unique constraint
+            console.log('Cannot check duplicates - will rely on unique constraint');
+            return false; // Allow the insert to proceed and handle constraint violation
         }
     }
     
@@ -570,7 +583,14 @@ document.addEventListener('DOMContentLoaded', function() {
             return true;
         } catch (error) {
             console.error('Error processing email signup:', error);
-            throw error; // Re-throw to be handled by caller
+            
+            // Check if it's a duplicate email error
+            if (error.message === 'DUPLICATE_EMAIL') {
+                console.log('Duplicate email detected at database level');
+                throw new Error('DUPLICATE_EMAIL'); // Re-throw the specific error
+            }
+            
+            throw error; // Re-throw other errors to be handled by caller
         }
     }
     
@@ -619,7 +639,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Error saving email to Supabase:', error);
                 // Check if it's a unique constraint error (email already exists)
                 if (error.code === '23505' || error.message.includes('duplicate') || error.message.includes('unique')) {
-                    console.log('Email already exists in database (unique constraint) - this is expected for duplicates');
+                    console.log('Email already exists in database (unique constraint) - this is a duplicate');
+                    throw new Error('DUPLICATE_EMAIL'); // Special error code for duplicates
                 } else {
                     console.error('Unexpected database error:', error);
                     throw new Error('Failed to save email: ' + error.message);
