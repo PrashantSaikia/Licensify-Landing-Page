@@ -234,19 +234,22 @@
                 el.classList.remove('loading');
             });
             
+            // Access the first row of returned data
+            const analytics = data[0];
+            
             // Overall stats
-            document.getElementById('overall-rate').textContent = data.conversion_rate + '%';
-            document.getElementById('overall-signups').textContent = data.total_signups;
-            document.getElementById('overall-visitors').textContent = data.total_visitors;
+            document.getElementById('overall-rate').textContent = analytics.overall_conversion_rate + '%';
+            document.getElementById('overall-signups').textContent = analytics.overall_signups;
+            document.getElementById('overall-visitors').textContent = analytics.overall_visitors;
             
             // Today's stats
-            document.getElementById('today-rate').textContent = data.today_conversion_rate + '%';
-            document.getElementById('today-signups').textContent = data.today_signups;
-            document.getElementById('today-visitors').textContent = data.today_visitors;
+            document.getElementById('today-rate').textContent = analytics.today_conversion_rate + '%';
+            document.getElementById('today-signups').textContent = analytics.today_signups;
+            document.getElementById('today-visitors').textContent = analytics.today_visitors;
             
             // Totals
-            document.getElementById('total-signups').textContent = data.total_signups;
-            document.getElementById('total-visitors').textContent = data.total_visitors;
+            document.getElementById('total-signups').textContent = analytics.overall_signups;
+            document.getElementById('total-visitors').textContent = analytics.overall_visitors;
             
             // Geographic statistics
             displayCountryStats(countryStats);
@@ -275,7 +278,7 @@
                 countryItem.innerHTML = `
                     <div class="country-name">${country.country}</div>
                     <div class="country-stats">
-                        <span>${country.visitors} visitor${country.visitors !== 1 ? 's' : ''}</span>
+                        <span>${country.visitor_count} visitor${country.visitor_count !== 1 ? 's' : ''}</span>
                         <span class="country-percentage">${country.percentage}%</span>
                     </div>
                 `;
@@ -319,7 +322,7 @@
                 cityItem.innerHTML = `
                     <div class="country-name">${locationName}</div>
                     <div class="country-stats">
-                        <span>${cityData.visitors} visitor${cityData.visitors !== 1 ? 's' : ''}</span>
+                        <span>${cityData.visitor_count} visitor${cityData.visitor_count !== 1 ? 's' : ''}</span>
                         <span class="country-percentage">${cityData.percentage}%</span>
                     </div>
                 `;
