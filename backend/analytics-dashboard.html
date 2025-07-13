@@ -234,22 +234,33 @@
                 el.classList.remove('loading');
             });
             
+            // Debug logging
+            console.log('Raw data received:', data);
+            console.log('Data type:', typeof data);
+            console.log('Data is array:', Array.isArray(data));
+            
             // Access the first row of returned data
-            const analytics = data[0];
+            const analytics = Array.isArray(data) && data.length > 0 ? data[0] : data;
+            console.log('Analytics object:', analytics);
             
-            // Overall stats
-            document.getElementById('overall-rate').textContent = analytics.overall_conversion_rate + '%';
-            document.getElementById('overall-signups').textContent = analytics.overall_signups;
-            document.getElementById('overall-visitors').textContent = analytics.overall_visitors;
+            if (!analytics) {
+                console.error('No analytics data available');
+                return;
+            }
             
-            // Today's stats
-            document.getElementById('today-rate').textContent = analytics.today_conversion_rate + '%';
-            document.getElementById('today-signups').textContent = analytics.today_signups;
-            document.getElementById('today-visitors').textContent = analytics.today_visitors;
+            // Overall stats with fallback
+            document.getElementById('overall-rate').textContent = (analytics.overall_conversion_rate || 0) + '%';
+            document.getElementById('overall-signups').textContent = analytics.overall_signups || 0;
+            document.getElementById('overall-visitors').textContent = analytics.overall_visitors || 0;
             
-            // Totals
-            document.getElementById('total-signups').textContent = analytics.overall_signups;
-            document.getElementById('total-visitors').textContent = analytics.overall_visitors;
+            // Today's stats with fallback
+            document.getElementById('today-rate').textContent = (analytics.today_conversion_rate || 0) + '%';
+            document.getElementById('today-signups').textContent = analytics.today_signups || 0;
+            document.getElementById('today-visitors').textContent = analytics.today_visitors || 0;
+            
+            // Totals with fallback
+            document.getElementById('total-signups').textContent = analytics.overall_signups || 0;
+            document.getElementById('total-visitors').textContent = analytics.overall_visitors || 0;
             
             // Geographic statistics
             displayCountryStats(countryStats);
