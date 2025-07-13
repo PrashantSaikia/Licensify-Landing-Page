@@ -300,20 +300,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Check if email already exists in Supabase
-        console.log('=== DEBUGGING DUPLICATE CHECK ===');
-        console.log('About to check email:', email);
-        console.log('Supabase client available:', !!supabase);
-        console.log('SUPABASE_CONFIG:', window.SUPABASE_CONFIG);
-        
         try {
             const emailExists = await isEmailAlreadyRegistered(email);
-            console.log('isEmailAlreadyRegistered returned:', emailExists);
             if (emailExists) {
-                console.log('Email already exists - showing error');
                 showError(emailInput, 'This email is already registered for early access!');
                 return;
             }
-            console.log('Email does not exist - proceeding with registration');
         } catch (error) {
             console.error('Error checking email registration:', error);
             showError(emailInput, 'Unable to verify email. Please try again.');
@@ -353,8 +345,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }, 500);
                 
             } catch (error) {
-                console.error('Error during email signup:', error);
-                
                 // Reset button
                 submitButton.innerHTML = originalButtonText;
                 submitButton.disabled = false;
@@ -366,6 +356,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     showError(emailInput, 'This email is already registered for early access!');
                 } else {
                     // Show generic error message for other errors
+                    console.error('Error during email signup:', error);
                     showError(emailInput, 'Unable to save email. Please try again.');
                 }
             }
@@ -380,9 +371,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Check if email is already registered (Supabase only)
     async function isEmailAlreadyRegistered(email) {
-        console.log('=== INSIDE isEmailAlreadyRegistered ===');
         console.log('Checking if email is already registered:', email);
-        console.log('Supabase client in function:', !!supabase);
         
         // Check Supabase database only (single source of truth)
         if (!supabase) {
@@ -391,7 +380,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         try {
-            console.log('Checking Supabase for email:', email.toLowerCase());
             const { data, error } = await supabase
                 .from('early_access_emails')
                 .select('email')
@@ -400,18 +388,12 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (error) {
                 console.error('Error checking email in Supabase:', error);
-                console.error('Error details:', error);
                 
                 // If error is due to RLS policy, we can't check duplicates
                 // So we'll rely on the unique constraint in the insert operation
                 console.log('Cannot check duplicates due to RLS - will rely on unique constraint');
                 return false; // Allow the insert to proceed and handle constraint violation
             }
-            
-            console.log('Supabase query result:', data);
-            console.log('Data type:', typeof data);
-            console.log('Data is array:', Array.isArray(data));
-            console.log('Data length:', data ? data.length : 'data is null/undefined');
             
             if (data && data.length > 0) {
                 console.log('Email found in Supabase - already registered');
@@ -422,7 +404,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         } catch (error) {
             console.error('Error with Supabase operation:', error);
-            console.error('Error stack:', error.stack);
             
             // If we can't check due to permissions, rely on unique constraint
             console.log('Cannot check duplicates - will rely on unique constraint');
@@ -582,14 +563,13 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('Email signup processing completed for:', email);
             return true;
         } catch (error) {
-            console.error('Error processing email signup:', error);
-            
             // Check if it's a duplicate email error
             if (error.message === 'DUPLICATE_EMAIL') {
-                console.log('Duplicate email detected at database level');
+                console.log('Duplicate email detected - showing error message to user');
                 throw new Error('DUPLICATE_EMAIL'); // Re-throw the specific error
             }
             
+            console.error('Error processing email signup:', error);
             throw error; // Re-throw other errors to be handled by caller
         }
     }
@@ -636,10 +616,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 .insert([emailData]);
             
             if (error) {
-                console.error('Error saving email to Supabase:', error);
                 // Check if it's a unique constraint error (email already exists)
                 if (error.code === '23505' || error.message.includes('duplicate') || error.message.includes('unique')) {
-                    console.log('Email already exists in database (unique constraint) - this is a duplicate');
+                    console.log('Email already exists in database - showing duplicate message to user');
                     throw new Error('DUPLICATE_EMAIL'); // Special error code for duplicates
                 } else {
                     console.error('Unexpected database error:', error);
@@ -650,6 +629,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         } catch (error) {
             console.error('Error with Supabase operation:', error);
+            throw error; // Re-throw the error so it can be handled by the calling function
         }
     }
     
