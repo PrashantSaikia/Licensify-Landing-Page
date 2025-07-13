@@ -282,14 +282,14 @@ body {
     background: #1e3a5f;
     color: white;
     border: none;
-    padding: 1.25rem 2rem;
+    padding: 1.25rem 3rem;
     border-radius: 50px;
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    justify-content: center;
     transition: all 0.3s ease;
     white-space: nowrap;
     box-shadow: 0 4px 15px rgba(30, 58, 95, 0.2);
@@ -303,14 +303,7 @@ body {
     box-shadow: 0 8px 25px rgba(30, 58, 95, 0.3);
 }
 
-.button-arrow {
-    font-size: 1.2rem;
-    transition: transform 0.3s ease;
-}
 
-.cta-button:hover .button-arrow {
-    transform: translateX(3px);
-}
 
 .privacy-note {
     font-size: 0.85rem;

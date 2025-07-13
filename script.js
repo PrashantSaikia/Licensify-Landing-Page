@@ -290,8 +290,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Show error message with animation
     function showError(input, message) {
+        // Find the CTA content container (parent of the form)
+        const ctaContent = input.closest('.cta-content');
+        if (!ctaContent) return;
+        
         // Remove existing error
-        const existingError = input.parentNode.querySelector('.error-message');
+        const existingError = ctaContent.querySelector('.error-message');
         if (existingError) {
             existingError.remove();
         }
@@ -307,15 +311,23 @@ document.addEventListener('DOMContentLoaded', function() {
         errorDiv.textContent = message;
         errorDiv.style.cssText = `
             color: #ff6b6b;
-            font-size: 0.85rem;
-            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
             text-align: center;
             opacity: 0;
             transform: translateY(-10px);
             transition: all 0.3s ease;
+            font-weight: 500;
         `;
         
-        input.parentNode.appendChild(errorDiv);
+        // Insert error message before the privacy note
+        const privacyNote = ctaContent.querySelector('.privacy-note');
+        if (privacyNote) {
+            ctaContent.insertBefore(errorDiv, privacyNote);
+        } else {
+            ctaContent.appendChild(errorDiv);
+        }
         
         // Animate in
         setTimeout(() => {
@@ -339,20 +351,32 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Show success message
     function showSuccessMessage(input) {
+        // Find the CTA content container (parent of the form)
+        const ctaContent = input.closest('.cta-content');
+        if (!ctaContent) return;
+        
         const successDiv = document.createElement('div');
         successDiv.className = 'success-message';
         successDiv.textContent = '✓ Success! Check your email for confirmation.';
         successDiv.style.cssText = `
             color: #4ade80;
-            font-size: 0.85rem;
-            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
             text-align: center;
             opacity: 0;
             transform: translateY(-10px);
             transition: all 0.3s ease;
+            font-weight: 500;
         `;
         
-        input.parentNode.appendChild(successDiv);
+        // Insert success message before the privacy note
+        const privacyNote = ctaContent.querySelector('.privacy-note');
+        if (privacyNote) {
+            ctaContent.insertBefore(successDiv, privacyNote);
+        } else {
+            ctaContent.appendChild(successDiv);
+        }
         
         // Animate in
         setTimeout(() => {
