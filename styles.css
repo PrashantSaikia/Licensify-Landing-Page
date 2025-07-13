@@ -971,7 +971,8 @@ body {
     
     .logo-l {
         font-size: 2.24rem;
-        margin-right: -0.05rem;
+        margin-right: 0.015em;
+        top: -0.01em;
     }
     
     .logo-icensify {
