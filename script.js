@@ -299,10 +299,16 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // Check if email already exists (both locally and in Supabase)
-        const emailExists = await isEmailAlreadyRegistered(email);
-        if (emailExists) {
-            showError(emailInput, 'This email is already registered for early access!');
+        // Check if email already exists in Supabase
+        try {
+            const emailExists = await isEmailAlreadyRegistered(email);
+            if (emailExists) {
+                showError(emailInput, 'This email is already registered for early access!');
+                return;
+            }
+        } catch (error) {
+            console.error('Error checking email registration:', error);
+            showError(emailInput, 'Unable to verify email. Please try again.');
             return;
         }
         
@@ -314,29 +320,41 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Process email signup with real-time analytics
         setTimeout(async () => {
-            // Store email and track signup
-            await storeEmailWithTracking(email);
-            
-            // Reset form with animation
-            emailInput.value = '';
-            emailInput.style.transform = 'scale(0.95)';
-            setTimeout(() => {
-                emailInput.style.transform = 'scale(1)';
-            }, 150);
-            
-            // Reset button
-            submitButton.innerHTML = originalButtonText;
-            submitButton.disabled = false;
-            submitButton.style.opacity = '1';
-            
-            // Show success feedback
-            showSuccessMessage(emailInput);
-            
-            // Show success modal with delay
-            setTimeout(() => {
-                showSuccessModal();
-            }, 500);
-            
+            try {
+                // Store email and track signup
+                await storeEmailWithTracking(email);
+                
+                // Reset form with animation
+                emailInput.value = '';
+                emailInput.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    emailInput.style.transform = 'scale(1)';
+                }, 150);
+                
+                // Reset button
+                submitButton.innerHTML = originalButtonText;
+                submitButton.disabled = false;
+                submitButton.style.opacity = '1';
+                
+                // Show success feedback
+                showSuccessMessage(emailInput);
+                
+                // Show success modal with delay
+                setTimeout(() => {
+                    showSuccessModal();
+                }, 500);
+                
+            } catch (error) {
+                console.error('Error during email signup:', error);
+                
+                // Reset button
+                submitButton.innerHTML = originalButtonText;
+                submitButton.disabled = false;
+                submitButton.style.opacity = '1';
+                
+                // Show error message
+                showError(emailInput, 'Unable to save email. Please try again.');
+            }
         }, 1200);
     }
     
@@ -353,7 +371,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Check Supabase database only (single source of truth)
         if (!supabase) {
             console.error('Supabase not initialized - cannot check for duplicates');
-            return false; // Allow registration if Supabase not available
+            throw new Error('Database connection not available');
         }
         
         try {
@@ -366,7 +384,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (error) {
                 console.error('Error checking email in Supabase:', error);
-                return false; // Allow registration if query fails
+                throw new Error('Database query failed: ' + error.message);
             }
             
             console.log('Supabase query result:', data);
@@ -379,7 +397,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         } catch (error) {
             console.error('Error with Supabase operation:', error);
-            return false; // Allow registration if operation fails
+            throw error; // Re-throw the error instead of returning false
         }
     }
     
@@ -522,16 +540,22 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Process email signup (Supabase storage + analytics tracking)
     async function storeEmailWithTracking(email) {
-        // Track analytics events
-        trackEmailSignup(email);
-        
-        // Save to Supabase database (primary storage)
-        await saveEmailToSupabase(email);
-        
-        // Update conversion rate analytics
-        await updateConversionRate();
-        
-        console.log('Email signup processing completed for:', email);
+        try {
+            // Track analytics events
+            trackEmailSignup(email);
+            
+            // Save to Supabase database (primary storage)
+            await saveEmailToSupabase(email);
+            
+            // Update conversion rate analytics
+            await updateConversionRate();
+            
+            console.log('Email signup processing completed for:', email);
+            return true;
+        } catch (error) {
+            console.error('Error processing email signup:', error);
+            throw error; // Re-throw to be handled by caller
+        }
     }
     
     // Save email to Supabase database
@@ -579,9 +603,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Error saving email to Supabase:', error);
                 // Check if it's a unique constraint error (email already exists)
                 if (error.code === '23505' || error.message.includes('duplicate') || error.message.includes('unique')) {
-                    console.log('Email already exists in database (unique constraint)');
+                    console.log('Email already exists in database (unique constraint) - this is expected for duplicates');
                 } else {
-                    console.error('Other database error:', error);
+                    console.error('Unexpected database error:', error);
+                    throw new Error('Failed to save email: ' + error.message);
                 }
             } else {
                 console.log('Email successfully saved to Supabase:', data);
