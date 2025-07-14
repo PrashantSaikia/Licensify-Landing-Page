@@ -4,36 +4,64 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thank You - Licensify</title>
+    <link rel="icon" type="image/png" href="favicon.png">
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://db.onlinewebfonts.com/c/cb3bb192300d6a868fec9a0dbedf6c50?family=Nexa+W01+Black" rel="stylesheet">
     
-    <!-- Configuration Script -->
-    <script src="config.js"></script>
+    <!-- Configuration -->
+    <script>
+        window.LICENSIFY_CONFIG = {
+            // Supabase Configuration
+            supabase: {
+                url: 'https://xvhwjewpwgtwaopicnpk.supabase.co',
+                anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh2aHdqZXdwd2d0d2FvcGljbnBrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIyNzQ1MTMsImV4cCI6MjA2Nzg1MDUxM30.laenKKIe0AGyPhZtEdJGoHiTGIWFTkmFLIKLYAiP0Fc'
+            },
+            
+            // Google Analytics and Ads Configuration
+            analytics: {
+                ga4Id: 'G-ZTSXYNV26B',
+                googleAdsId: 'AW-17354710424',
+                googleAdsConversionId: 'AW-17354710424',
+                googleAdsConversionLabel: ''
+            }
+        };
+    </script>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17354710424"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'AW-17354710424');
+    </script>
+
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZTSXYNV26B"></script>
+    <script>
+        gtag('config', 'G-ZTSXYNV26B');
+    </script>
 </head>
 <body>
     <main role="main" class="thank-you-page">
         <div class="container">
             <div class="thank-you-content">
-                <div class="logo">
-                    <div class="logo-text" aria-label="Licensify Logo">
-                        <span class="logo-l">L</span>
-                        <span class="logo-icensify">icensify</span>
-                    </div>
-                </div>
-                
+                <img src="upscaled-white-licensify-logo.png" alt="Licensify" class="logo" style="height: 40px;">
+                <div class="success-icon">🎉</div>
                 <div class="thank-you-message">
-                    <div class="success-icon">🎉</div>
                     <h1>You're In!</h1>
-                    <p>We've got your email and will notify you as soon as Licensify is ready to launch!</p>
-                    <p class="special-offer">Plus, you'll get 50% off when we launch!</p>
-                    <a href="/" class="return-home">Return to Homepage</a>
+                    <p>We've got your email and will notify you as soon as<br>Licensify is ready to launch!</p>
+                    <a href="/" class="cta-button">Return to Homepage</a>
                 </div>
             </div>
         </div>
     </main>
-
     <script src="script.js"></script>
 </body>
 </html> 
