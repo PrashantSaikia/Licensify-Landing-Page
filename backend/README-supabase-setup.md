@@ -129,7 +129,7 @@ This should show your configuration. If it's undefined, check that `config.js` i
 The integration includes:
 
 - **Duplicate prevention**: Checks Supabase database for existing emails
-- **Error handling**: Gracefully handles connection issues  
+- **Error handling**: Gracefully handles connection issues
 - **Automatic metadata**: Stores user agent, referrer, and timestamp
 - **Single source of truth**: Uses only Supabase for email storage
 

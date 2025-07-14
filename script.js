@@ -333,7 +333,7 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             const emailExists = await isEmailAlreadyRegistered(email);
             if (emailExists) {
-                showError(emailInput, 'This email is already registered for early access!');
+            showError(emailInput, 'This email is already registered for early access!');
                 return;
             }
         } catch (error) {
@@ -351,29 +351,29 @@ document.addEventListener('DOMContentLoaded', function() {
         // Process email signup with real-time analytics
         setTimeout(async () => {
             try {
-                // Store email and track signup
+            // Store email and track signup
                 await storeEmailWithTracking(email);
-                
-                // Reset form with animation
-                emailInput.value = '';
-                emailInput.style.transform = 'scale(0.95)';
-                setTimeout(() => {
-                    emailInput.style.transform = 'scale(1)';
-                }, 150);
-                
-                // Reset button
-                submitButton.innerHTML = originalButtonText;
-                submitButton.disabled = false;
-                submitButton.style.opacity = '1';
-                
-                // Show success feedback
-                showSuccessMessage(emailInput);
-                
-                // Show success modal with delay
-                setTimeout(() => {
-                    showSuccessModal();
-                }, 500);
-                
+            
+            // Reset form with animation
+            emailInput.value = '';
+            emailInput.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                emailInput.style.transform = 'scale(1)';
+            }, 150);
+            
+            // Reset button
+            submitButton.innerHTML = originalButtonText;
+            submitButton.disabled = false;
+            submitButton.style.opacity = '1';
+            
+            // Show success feedback
+            showSuccessMessage(emailInput);
+            
+            // Show success modal with delay
+            setTimeout(() => {
+                showSuccessModal();
+            }, 500);
+            
             } catch (error) {
                 // Reset button
                 submitButton.innerHTML = originalButtonText;
@@ -757,7 +757,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <p>It is our policy to process personal information with the utmost respect for privacy and security. We adhere to all relevant regulations and guidelines to ensure that the data we handle is protected against unauthorized access, disclosure, alteration, and destruction. Our practices are designed to safeguard the confidentiality and integrity of your personal information, while enabling us to deliver the services you trust us with.</p>
             
             <ul>
-                <li>We do not have a designated Data Protection Officer (DPO) but remain fully committed to addressing your privacy concerns. Should you have any questions or require further information about how we manage personal information, please feel free to contact us at <a href="mailto:hello@contextwindowlabs.com">hello@contextwindowlabs.com</a> or +44 7404468862.</li>
+                <li>We do not have a designated Data Protection Officer (DPO) but remain fully committed to addressing your privacy concerns. Should you have any questions or require further information about how we manage personal information, please feel free to contact us at <a href="mailto:hello@contextwindowlabs.com">hello@contextwindowlabs.com</a>.</li>
             </ul>
             
             <p>Your privacy is our priority. We are committed to processing your personal information transparently and with your safety in mind. This commitment extends to our collaboration with third-party services that may process personal information on our behalf, such as in the case of sending invoices. Rest assured, all activities are conducted in strict compliance with applicable privacy laws.</p>
@@ -799,7 +799,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <h3>Transparency and Control:</h3>
             <p>We believe in transparency and providing you with control over your personal information. You will always be informed about any significant changes to our sharing practices, and where applicable, you will have the option to consent to such changes.</p>
             
-            <p>Your trust is important to us, and we strive to ensure that your personal information is disclosed only in accordance with this policy and when there is a justified reason to do so. For any queries or concerns about how we share and disclose personal information, please reach out to us at <a href="mailto:hello@contextwindowlabs.com">hello@contextwindowlabs.com</a> or +44 7404468862.</p>
+            <p>Your trust is important to us, and we strive to ensure that your personal information is disclosed only in accordance with this policy and when there is a justified reason to do so. For any queries or concerns about how we share and disclose personal information, please reach out to us at <a href="mailto:hello@contextwindowlabs.com">hello@contextwindowlabs.com</a>.</p>
             
             <h2>User Rights and Choices:</h2>
             <p>At Context Window Labs LTD, we recognize and respect your rights regarding your personal information, in accordance with the General Data Protection Regulation (GDPR) and other applicable data protection laws. We are committed to ensuring you can exercise your rights effectively. Below is an overview of your rights and how you can exercise them:</p>
@@ -817,7 +817,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </ul>
             
             <h3>Exercising Your Rights:</h3>
-            <p>To exercise any of these rights, please contact us at <a href="mailto:hello@contextwindowlabs.com">hello@contextwindowlabs.com</a> or +44 7404468862. We will respond to your request in accordance with applicable data protection laws and within the timeframes stipulated by those laws. Please note, in some cases, we may need to verify your identity as part of the process to ensure the security of your personal information.</p>
+            <p>To exercise any of these rights, please contact us at <a href="mailto:hello@contextwindowlabs.com">hello@contextwindowlabs.com</a>. We will respond to your request in accordance with applicable data protection laws and within the timeframes stipulated by those laws. Please note, in some cases, we may need to verify your identity as part of the process to ensure the security of your personal information.</p>
             
             <p>We are committed to facilitating the exercise of your rights and to ensuring you have full control over your personal information. If you have any questions or concerns about how your personal information is handled, please do not hesitate to get in touch with us.</p>
             
@@ -848,7 +848,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             <p>For more detailed information about the cookies we use, their purposes, and how you can manage your preferences, please visit our detailed Cookie Policy <a href="http://contextwindowlabs.com/" target="_blank">http://contextwindowlabs.com/</a>.</p>
             
-            <p>Should you have any questions or concerns about our use of cookies and tracking technologies, please do not hesitate to contact us at <a href="mailto:hello@contextwindowlabs.com">hello@contextwindowlabs.com</a> or +44 7404468862. Your privacy and the integrity of your personal data are of utmost importance to us.</p>
+            <p>Should you have any questions or concerns about our use of cookies and tracking technologies, please do not hesitate to contact us at <a href="mailto:hello@contextwindowlabs.com">hello@contextwindowlabs.com</a>. Your privacy and the integrity of your personal data are of utmost importance to us.</p>
             
             <h2>Data Breach Notification Procedures:</h2>
             <p>At Context Window Labs LTD, we understand the importance of protecting your personal information and take proactive measures to safeguard it. In the event of a data breach that poses a risk to your privacy rights and freedoms, we have established clear procedures for promptly identifying, assessing, and mitigating the impact of the breach. Our data breach notification procedures are designed to comply with applicable data protection laws and regulations, including the General Data Protection Regulation (GDPR).</p>
@@ -874,7 +874,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <h3>Support and Assistance:</h3>
             <p>In the event of a data breach, we are committed to providing affected individuals with the support and assistance they need, including guidance on steps they can take to mitigate the potential risks associated with the breach.</p>
             
-            <p>Point of Contact: If you have any questions or concerns about a data breach or believe you may have been affected, please contact us immediately at <a href="mailto:hello@contextwindowlabs.com">hello@contextwindowlabs.com</a> or +44 7404468862.</p>
+            <p>Point of Contact: If you have any questions or concerns about a data breach or believe you may have been affected, please contact us immediately at <a href="mailto:hello@contextwindowlabs.com">hello@contextwindowlabs.com</a>.</p>
             
             <h2>Policy Updates and Changes:</h2>
             <p>At Context Window Labs LTD, we are committed to keeping you informed about how we handle your personal information and any changes to our privacy practices. We may update this privacy policy from time to time to reflect changes in legal requirements, industry standards, or our business operations. We want to assure you that any updates will be communicated transparently and in accordance with applicable data protection laws.</p>
@@ -886,7 +886,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </ul>
             
             <h2>Contact Us:</h2>
-            <p>If you have any questions or concerns about our privacy policy or any updates to it, please don't hesitate to contact us at <a href="mailto:hello@contextwindowlabs.com">hello@contextwindowlabs.com</a> or +44 7404468862. We are here to address any inquiries you may have and to ensure that you have the information you need to feel confident about how your personal information is handled.</p>
+            <p>If you have any questions or concerns about our privacy policy or any updates to it, please don't hesitate to contact us at <a href="mailto:hello@contextwindowlabs.com">hello@contextwindowlabs.com</a>. We are here to address any inquiries you may have and to ensure that you have the information you need to feel confident about how your personal information is handled.</p>
         `;
     }
     
