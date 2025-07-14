@@ -1,2 +1,4 @@
-# macOS system files
+.env
+config.js
+*.log
 .DS_Store 

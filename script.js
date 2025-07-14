@@ -320,77 +320,40 @@ document.addEventListener('DOMContentLoaded', function() {
     // Enhanced email submission handling
     async function handleEmailSubmission(form) {
         const emailInput = form.querySelector('input[type="email"]');
-        const submitButton = form.querySelector('button[type="submit"]');
         const email = emailInput.value.trim();
         
-        // Enhanced email validation
+        // Validate email
         if (!isValidEmail(email)) {
             showError(emailInput, 'Please enter a valid email address');
             return;
         }
         
-        // Check if email already exists in Supabase
         try {
-            const emailExists = await isEmailAlreadyRegistered(email);
-            if (emailExists) {
-            showError(emailInput, 'This email is already registered for early access!');
+            // Check if email is already registered
+            if (await isEmailAlreadyRegistered(email)) {
+                showError(emailInput, 'This email is already registered');
                 return;
             }
-        } catch (error) {
-            console.error('Error checking email registration:', error);
-            showError(emailInput, 'Unable to verify email. Please try again.');
-            return;
-        }
-        
-        // Show loading state with animation
-        const originalButtonText = submitButton.innerHTML;
-        submitButton.innerHTML = '<span class="loading-spinner"></span><span>Submitting...</span>';
-        submitButton.disabled = true;
-        submitButton.style.opacity = '0.7';
-        
-        // Process email signup with real-time analytics
-        setTimeout(async () => {
-            try {
-            // Store email and track signup
-                await storeEmailWithTracking(email);
             
-            // Reset form with animation
-            emailInput.value = '';
-            emailInput.style.transform = 'scale(0.95)';
-            setTimeout(() => {
-                emailInput.style.transform = 'scale(1)';
-            }, 150);
+            // Store email and track analytics
+            await storeEmailWithTracking(email);
             
-            // Reset button
-            submitButton.innerHTML = originalButtonText;
-            submitButton.disabled = false;
-            submitButton.style.opacity = '1';
-            
-            // Show success feedback
+            // Show success and redirect
             showSuccessMessage(emailInput);
             
-            // Show success modal with delay
+            // Redirect to thank you page after a short delay
             setTimeout(() => {
-                showSuccessModal();
-            }, 500);
+                window.location.href = '/thank-you.html';
+            }, 1500);
             
-            } catch (error) {
-                // Reset button
-                submitButton.innerHTML = originalButtonText;
-                submitButton.disabled = false;
-                submitButton.style.opacity = '1';
-                
-                // Check if it's a duplicate email error
-                if (error.message === 'DUPLICATE_EMAIL') {
-                    console.log('Showing duplicate email error to user');
-                    showError(emailInput, 'This email is already registered for early access!');
-                } else {
-                    // Show generic error message for other errors
-                    console.error('Error during email signup:', error);
-                    showError(emailInput, 'Unable to save email. Please try again.');
-                }
+        } catch (error) {
+            if (error.message === 'DUPLICATE_EMAIL') {
+                showError(emailInput, 'This email is already registered');
+            } else {
+                showError(emailInput, 'Something went wrong. Please try again.');
+                console.error('Error submitting email:', error);
             }
-        }, 1200);
+        }
     }
     
     // Enhanced email validation
@@ -553,15 +516,31 @@ document.addEventListener('DOMContentLoaded', function() {
     function trackEmailSignup(email) {
         console.log('Tracking email signup:', email);
         
-        // Google Analytics 4
-        if (typeof gtag !== 'undefined') {
+        // Google Analytics 4 and Ads Conversion
+        if (typeof gtag !== 'undefined' && window.LICENSIFY_CONFIG && window.LICENSIFY_CONFIG.analytics) {
+            const analytics = window.LICENSIFY_CONFIG.analytics;
+            
+            // Track signup event in GA4
+            if (analytics.ga4Id) {
             gtag('event', 'email_signup', {
                 'email': email,
                 'source': 'landing_page',
                 'value': 1,
                 'currency': 'GBP'
             });
-            console.log('Google Analytics event tracked');
+        }
+        
+            // Track Google Ads conversion
+            if (analytics.googleAdsConversionId && analytics.googleAdsConversionLabel) {
+                gtag('event', 'conversion', {
+                    'send_to': `${analytics.googleAdsConversionId}/${analytics.googleAdsConversionLabel}`,
+                    'value': 1.0,
+                    'currency': 'GBP',
+                    'transaction_id': Date.now().toString()
+                });
+            }
+            
+            console.log('Google Analytics and Ads conversion tracked');
         }
         
         // Facebook Pixel
@@ -574,7 +553,6 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('Facebook Pixel event tracked');
         }
         
-        // Note: Custom analytics endpoint was disabled - no backend available
         console.log('Email signup tracking completed');
     }
     
