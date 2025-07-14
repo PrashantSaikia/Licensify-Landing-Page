@@ -1,4 +1,154 @@
 // Enhanced email form handling and animations for Licensify landing page
+// Animation Functions
+function initializeAnimations() {
+    // Animate social proof numbers
+    animateNumbers();
+    
+    // Add staggered animation to feature cards
+    animateFeatureCards();
+    
+    // Add animation to testimonials
+    animateTestimonials();
+    
+    // Add hover effects to interactive elements
+    addHoverEffects();
+}
+
+function animateNumbers() {
+    const numbers = document.querySelectorAll('.proof-number');
+    
+    numbers.forEach(number => {
+        const target = number.textContent;
+        if (target.includes('15,000+')) {
+            animateCounter(number, 0, 15000, 2000, '+');
+        } else if (target.includes('98%')) {
+            animateCounter(number, 0, 98, 1500, '%');
+        }
+    });
+}
+
+function animateCounter(element, start, end, duration, suffix = '') {
+    let current = start;
+    const increment = end / (duration / 16); // 60fps
+    const timer = setInterval(() => {
+        current += increment;
+        if (current >= end) {
+            current = end;
+            clearInterval(timer);
+        }
+        
+        if (suffix === '+') {
+            element.textContent = Math.floor(current).toLocaleString() + '+';
+        } else if (suffix === '%') {
+            element.textContent = Math.floor(current) + '%';
+        } else {
+            element.textContent = Math.floor(current).toLocaleString();
+        }
+    }, 16);
+}
+
+function animateFeatureCards() {
+    const cards = document.querySelectorAll('.feature-item');
+    
+    cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        
+        setTimeout(() => {
+            card.style.transition = 'all 0.6s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 100);
+    });
+}
+
+function animateTestimonials() {
+    const testimonials = document.querySelectorAll('.testimonial-card');
+    
+    testimonials.forEach((testimonial, index) => {
+        testimonial.style.opacity = '0';
+        testimonial.style.transform = 'translateY(30px)';
+        
+        setTimeout(() => {
+            testimonial.style.transition = 'all 0.6s ease';
+            testimonial.style.opacity = '1';
+            testimonial.style.transform = 'translateY(0)';
+        }, (index * 200) + 1000);
+    });
+}
+
+function addHoverEffects() {
+    // Add ripple effect to buttons
+    const buttons = document.querySelectorAll('.cta-button, .cta-button-large');
+    buttons.forEach(button => {
+        button.addEventListener('click', createRipple);
+    });
+}
+
+function createRipple(e) {
+    const button = e.currentTarget;
+    const ripple = document.createElement('span');
+    const rect = button.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    const x = e.clientX - rect.left - size / 2;
+    const y = e.clientY - rect.top - size / 2;
+    
+    ripple.style.width = ripple.style.height = size + 'px';
+    ripple.style.left = x + 'px';
+    ripple.style.top = y + 'px';
+    ripple.classList.add('ripple');
+    
+    const existingRipple = button.querySelector('.ripple');
+    if (existingRipple) {
+        existingRipple.remove();
+    }
+    
+    button.appendChild(ripple);
+    
+    setTimeout(() => {
+        ripple.remove();
+    }, 600);
+}
+
+function initializeHeaderScroll() {
+    const header = document.querySelector('.header');
+    if (!header) return; // Skip if no header (thank you page)
+    
+    window.addEventListener('scroll', () => {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        
+        // Add scrolled class when scrolling down
+        if (scrollTop > 50) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+        
+        // Ensure header is always visible (no hide on scroll)
+        header.style.transform = 'translateY(0)';
+    });
+}
+
+function initializeScrollEffects() {
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-in');
+            }
+        });
+    }, observerOptions);
+    
+    // Observe sections for scroll animations
+    document.querySelectorAll('.features-section, .testimonials-section, .final-cta').forEach(section => {
+        observer.observe(section);
+    });
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     // Check if we're on the main page or thank you page
     const isMainPage = !window.location.pathname.includes('thank-you');
@@ -25,7 +175,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const emailForm = document.getElementById('emailForm');
         const finalEmailForm = document.querySelector('.final-email-form');
         
-        // Initialize animations and interactions
+        // Initialize main page features
         initializeAnimations();
         initializeScrollEffects();
         initializeHeaderScroll();
