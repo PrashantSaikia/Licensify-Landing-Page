@@ -150,6 +150,9 @@ function initializeScrollEffects() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize modal element
+    const modal = document.querySelector('.modal');
+    
     // Check if we're on the main page or thank you page
     const isMainPage = !window.location.pathname.includes('thank-you');
     
@@ -654,12 +657,16 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Enhanced success modal
     function showSuccessModal() {
+        if (!modal) return; // Exit if modal doesn't exist
+        
         modal.classList.add('show');
         document.body.style.overflow = 'hidden';
         
         // Add celebration animation
         const modalContent = modal.querySelector('.modal-content');
-        modalContent.style.animation = 'modalCelebration 0.6s ease';
+        if (modalContent) {
+            modalContent.style.animation = 'modalCelebration 0.6s ease';
+        }
         
         // Add confetti effect
         createConfetti();
@@ -696,6 +703,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Close modal function (global scope for onclick handler)
     window.closeModal = function() {
+        if (!modal) return; // Exit if modal doesn't exist
+        
         modal.classList.remove('show');
         document.body.style.overflow = 'auto';
     };
@@ -886,11 +895,13 @@ document.addEventListener('DOMContentLoaded', function() {
     };
     
     // Enhanced modal and privacy policy interactions
-    modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
-            closeModal();
-        }
-    });
+    if (modal) {
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+    }
     
     const privacySection = document.getElementById('privacy-policy');
     if (privacySection) {
@@ -904,7 +915,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Enhanced keyboard navigation
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
-            if (modal.classList.contains('show')) {
+            if (modal && modal.classList.contains('show')) {
                 closeModal();
             }
             if (privacySection && privacySection.style.display === 'flex') {
