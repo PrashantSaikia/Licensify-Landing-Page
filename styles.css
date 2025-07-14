@@ -533,14 +533,14 @@ body {
 }
 
 .footer-in-hero .footer-bottom p {
-    color: #5a7a9f;
+    color: rgba(255, 255, 255, 0.6);
     font-size: 0.85rem;
     margin: 0;
     opacity: 0.8;
 }
 
 .footer-in-hero .footer-bottom .privacy-link {
-    color: #5a7a9f;
+    color: rgba(255, 255, 255, 0.6);
     font-size: 0.85rem;
     text-decoration: none;
     transition: color 0.3s ease;
@@ -548,7 +548,7 @@ body {
 }
 
 .footer-in-hero .footer-bottom .privacy-link:hover {
-    color: #1e3a5f;
+    color: rgba(255, 255, 255, 0.9);
     opacity: 1;
 }
 
