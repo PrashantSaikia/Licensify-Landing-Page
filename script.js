@@ -102,14 +102,21 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     async function updateConversionRate() {
-        if (!supabase) return;
+        if (!supabase) {
+            console.log('Skipping conversion rate update - Supabase not initialized');
+            return;
+        }
         
         try {
             const { data, error } = await supabase.rpc('get_analytics_dashboard');
             
             if (error) {
                 console.error('Error getting analytics:', error);
-            } else {
+                return;
+            }
+            
+            // Only log analytics if we have data
+            if (data && data.overall) {
                 console.log('📊 REAL-TIME ANALYTICS:', data);
                 console.log(`🎯 Overall Conversion Rate: ${data.overall.conversion_rate}% (${data.overall.total_signups}/${data.overall.total_visitors})`);
                 console.log(`📅 Today's Conversion Rate: ${data.today.conversion_rate}% (${data.today.signups}/${data.today.visitors})`);
@@ -118,17 +125,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 window.licensifyAnalytics = data;
             }
         } catch (error) {
-            console.error('Error updating conversion rate:', error);
+            console.log('Skipping analytics update:', error.message);
         }
     }
     
     function initializeAnalytics() {
         console.log('🚀 Initializing Licensify Analytics...');
         
-        // Track this page visit
-        trackPageVisit();
-        
-        // Make analytics functions globally available
+        // Make analytics functions globally available first
         window.getLicensifyAnalytics = updateConversionRate;
         window.getConversionRate = async () => {
             if (!supabase) return null;
@@ -141,6 +145,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 return null;
             }
         };
+        
+        // Track page visit only if Supabase is initialized
+        if (supabase) {
+            trackPageVisit().catch(error => {
+                console.log('Error tracking page visit:', error.message);
+            });
+        } else {
+            console.log('Supabase not initialized - skipping page visit tracking');
+        }
         
         console.log('✅ Analytics initialized. Use window.getLicensifyAnalytics() to check stats');
     }
