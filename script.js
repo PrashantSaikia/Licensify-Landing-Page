@@ -6,11 +6,16 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize Supabase client
     let supabase = null;
-    if (window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.url && window.SUPABASE_CONFIG.anonKey) {
-        supabase = window.supabase.createClient(
-            window.SUPABASE_CONFIG.url,
-            window.SUPABASE_CONFIG.anonKey
-        );
+    if (window.LICENSIFY_CONFIG && window.LICENSIFY_CONFIG.supabase) {
+        const { url, anonKey } = window.LICENSIFY_CONFIG.supabase;
+        if (url && anonKey) {
+            supabase = window.supabase.createClient(url, anonKey);
+            console.log('✅ Supabase initialized successfully');
+        } else {
+            console.error('❌ Missing Supabase configuration');
+        }
+    } else {
+        console.error('❌ Missing LICENSIFY_CONFIG or supabase configuration');
     }
     
     // Initialize analytics tracking
@@ -338,12 +343,12 @@ document.addEventListener('DOMContentLoaded', function() {
             // Store email and track analytics
             await storeEmailWithTracking(email);
             
-            // Show success and redirect
+            // Show success message
             showSuccessMessage(emailInput);
             
             // Redirect to thank you page after a short delay
             setTimeout(() => {
-                window.location.href = '/thank-you.html';
+                window.location.href = 'thank-you.html';  // Removed leading slash
             }, 1500);
             
         } catch (error) {
