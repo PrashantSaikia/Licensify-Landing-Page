@@ -69,36 +69,29 @@
     <!-- Supabase JavaScript Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17354710424"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'AW-17354710424');
+    </script>
+
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZTSXYNV26B"></script>
+    <script>
+        gtag('config', 'G-ZTSXYNV26B');
+    </script>
+
     <!-- Configuration Script -->
     <script src="config.js"></script>
-    
+
     <!-- Cookie Consent -->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js" data-cfasync="false"></script>
     
-    <!-- Google tag (gtag.js) - Dynamically loaded -->
-    <script>
-        // Load Google Analytics script dynamically
-        if (window.LICENSIFY_CONFIG && window.LICENSIFY_CONFIG.analytics.ga4Id) {
-            const gaScript = document.createElement('script');
-            gaScript.async = true;
-            gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${window.LICENSIFY_CONFIG.analytics.ga4Id}`;
-            document.head.appendChild(gaScript);
-            
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            
-            // Google Analytics 4
-            gtag('config', window.LICENSIFY_CONFIG.analytics.ga4Id);
-            
-            // Google Ads
-            if (window.LICENSIFY_CONFIG.analytics.googleAdsId) {
-                gtag('config', window.LICENSIFY_CONFIG.analytics.googleAdsId);
-            }
-        }
-    </script>
-
     <!-- Initialize Cookie Consent -->
     <script>
         window.addEventListener('load', function(){
