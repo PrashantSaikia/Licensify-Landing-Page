@@ -537,6 +537,15 @@ body {
     font-size: 0.85rem;
     margin: 0;
     opacity: 0.8;
+    flex: 1;
+}
+
+.footer-in-hero .footer-bottom .social-links {
+    display: flex;
+    gap: 1.25rem;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
 }
 
 .footer-in-hero .footer-bottom .privacy-link {
@@ -545,6 +554,8 @@ body {
     text-decoration: none;
     transition: color 0.3s ease;
     opacity: 0.8;
+    flex: 1;
+    text-align: right;
 }
 
 .footer-in-hero .footer-bottom .privacy-link:hover {
@@ -1313,5 +1324,24 @@ body {
 
     .footer-in-hero .social-links {
         gap: 1rem;
+    }
+
+    .footer-in-hero .footer-bottom {
+        padding: 0.5rem 20px;
+        gap: 0.75rem;
+        flex-direction: column;
+    }
+
+    .footer-in-hero .footer-bottom p,
+    .footer-in-hero .footer-bottom .privacy-link {
+        text-align: center;
+    }
+
+    .footer-in-hero .social-links {
+        order: 2;
+    }
+
+    .footer-in-hero .footer-bottom .privacy-link {
+        order: 3;
     }
 } 
