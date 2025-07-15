@@ -352,13 +352,10 @@ document.addEventListener('DOMContentLoaded', function() {
             // Store email and track analytics
             await storeEmailWithTracking(email);
             
-            // Show success message
-            showSuccessMessage(emailInput);
-            
             // Redirect to thank you page after a short delay
             setTimeout(() => {
                 window.location.href = 'thank-you.html';  // Removed leading slash
-            }, 1500);
+            }, 500);
             
         } catch (error) {
             if (error.message === 'DUPLICATE_EMAIL') {
